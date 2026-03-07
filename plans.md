@@ -9,7 +9,7 @@
 
 ## Milestones
 - [x] Milestone 1 - Planning and repository bootstrap
-- [ ] Milestone 2 - App scaffold and design system foundation
+- [x] Milestone 2 - App scaffold and design system foundation
 - [ ] Milestone 3 - Vault sync and normalization pipeline
 - [ ] Milestone 4 - Core site experience
 - [ ] Milestone 5 - Search and knowledge features
@@ -41,11 +41,54 @@ How to verify:
 Tradeoffs:
 - Detailed implementation specifics deferred to subsequent milestones.
 
+### Milestone 2
+Status: Completed
+
+Files created/updated:
+- `package.json`
+- `next.config.ts`
+- `tsconfig.typecheck.json`
+- `eslint.config.mjs`
+- `vitest.config.ts`
+- `playwright.config.ts`
+- `.prettierrc.json`
+- `.prettierignore`
+- `app/layout.tsx`
+- `app/page.tsx`
+- `app/docs/page.tsx`
+- `app/docs/[...slug]/page.tsx`
+- `app/tags/[tag]/page.tsx`
+- `app/graph/page.tsx`
+- `app/globals.css`
+- `components/layout/*`
+- `components/primitives/*`
+- `components/providers/theme-provider.tsx`
+- `lib/site/config.ts`
+- `lib/utils.ts`
+- `tests/setup/vitest.setup.ts`
+- `tests/unit/utils.test.ts`
+
+What works now:
+- App Router project scaffold with static export-compatible route structure.
+- Base UI + Motion based shell and reusable primitives are integrated.
+- Dark mode toggle, top nav, sidebar explorer, and starter docs/tag/graph routes render.
+- Lint/typecheck/test/build commands are wired and passing.
+
+How to verify:
+- `pnpm dev`
+- `pnpm lint`
+- `pnpm typecheck`
+- `pnpm test`
+- `pnpm build`
+
+Tradeoffs:
+- Docs catch-all route currently includes a temporary `/docs/welcome` page to satisfy static-export parameter requirements until real content generation lands in Milestone 3.
+
 ## Verification Checklist
-- [ ] `pnpm lint`
-- [ ] `pnpm typecheck`
-- [ ] `pnpm test`
-- [ ] `pnpm build`
+- [x] `pnpm lint`
+- [x] `pnpm typecheck`
+- [x] `pnpm test`
+- [x] `pnpm build`
 
 ## Decisions and Defaults
 - Next.js selected over Astro due to React-first interactive UI requirements and Base UI/Motion alignment.

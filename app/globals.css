@@ -1,0 +1,44 @@
+@import "tailwindcss";
+
+:root {
+  --background: #fbf9f6;
+  --panel: #f3efe9;
+  --text: #1c1a19;
+  --muted: #615a53;
+  --border: #dbd2c8;
+  --border-strong: #b7aa9a;
+  --ring: #8f7e6c;
+}
+
+.dark {
+  --background: #121212;
+  --panel: #1c1c1c;
+  --text: #f5f1eb;
+  --muted: #b7ada1;
+  --border: #33302d;
+  --border-strong: #57514c;
+  --ring: #8a7f74;
+}
+
+@theme inline {
+  --font-sans: var(--font-manrope);
+  --font-serif: var(--font-newsreader);
+  --font-mono: var(--font-mono);
+}
+
+* {
+  border-color: var(--border);
+}
+
+body {
+  background:
+    radial-gradient(circle at 0% 0%, color-mix(in oklab, var(--panel), transparent 15%), transparent 45%),
+    radial-gradient(circle at 100% 100%, color-mix(in oklab, var(--panel), transparent 18%), transparent 55%),
+    var(--background);
+  color: var(--text);
+  font-family: var(--font-manrope), sans-serif;
+}
+
+::selection {
+  background: color-mix(in oklab, var(--ring), transparent 55%);
+}
