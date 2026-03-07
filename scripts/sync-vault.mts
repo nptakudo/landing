@@ -6,15 +6,7 @@ import matter from "gray-matter";
 const vaultPath = process.env.OBSIDIAN_VAULT_PATH ?? "/Users/takudo/Documents/TakudoNotes";
 const notesOutputDir = path.join(process.cwd(), "content", "notes");
 const assetsOutputDir = path.join(process.cwd(), "public", "obsidian-assets");
-
-const excludedPrefixes = [
-  ".obsidian/",
-  ".git/",
-  "Templates/",
-  "zArchive/",
-  "Excalidraw/",
-  "landing/",
-];
+const excludedPrefixes = [".obsidian/", ".git/", "Templates/", "zArchive/", "Excalidraw/", "tests/"];
 
 await runSync();
 
@@ -105,17 +97,30 @@ function parseEmbeddedLinks(markdown: string): string[] {
   return targets;
 }
 
-function shouldSkip(relativePath: string): boolean {
-  const normalized = relativePath.replace(/\\/g, "/");
-  return excludedPrefixes.some((prefix) => normalized.startsWith(prefix));
-}
-
 function isPublished(frontmatter: Record<string, unknown>): boolean {
   if (frontmatter.private === true || frontmatter.draft === true) {
     return false;
   }
 
   return frontmatter.publish === true;
+}
+
+function shouldSkip(relativePath: string): boolean {
+  const normalized = relativePath.replace(/\\/g, "/");
+  if (excludedPrefixes.some((prefix) => normalized.startsWith(prefix))) {
+    return true;
+  }
+  if (/(^|\/)tests\//.test(normalized)) {
+    return true;
+  }
+
+  const absolutePath = path.resolve(vaultPath, normalized);
+  const absoluteSiteRoot = path.resolve(process.cwd());
+  if (absolutePath === absoluteSiteRoot) {
+    return true;
+  }
+
+  return absolutePath.startsWith(`${absoluteSiteRoot}${path.sep}`);
 }
 
 function resolveAssetPath(
