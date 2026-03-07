@@ -86,4 +86,4 @@ Current UI is functionally correct but visually flat, low-contrast in key surfac
 - UI refresh shipped across all primary routes with improved hierarchy, spacing, and readability.
 - Local live preview is available on dev server and static-export server.
 - Validation passed for lint, typecheck, unit tests, build, and Playwright e2e smoke.
-- Branch preview deploy: `https://landing-m71a8n8pg-nptakudos-projects.vercel.app`.
+- Branch preview deploy: `https://landing-c74wcsne9-nptakudos-projects.vercel.app`.

@@ -199,7 +199,7 @@ What works now:
 - Command search (`Cmd/Ctrl + K`) and theme switcher are upgraded with polished interactions.
 - Playwright e2e visual smoke test covers key routes and screenshot capture.
 - Sync filtering no longer hard-blocks `landing/` content and now uses recursion-safe path checks.
-- Updated Vercel branch preview is live at `https://landing-m71a8n8pg-nptakudos-projects.vercel.app`.
+- Updated Vercel branch preview is live at `https://landing-c74wcsne9-nptakudos-projects.vercel.app`.
 
 How to verify:
 - `pnpm content:sync`
