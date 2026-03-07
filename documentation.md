@@ -28,6 +28,7 @@ pnpm lint
 pnpm typecheck
 pnpm test
 pnpm build
+pnpm test:e2e
 ```
 
 ## Publish workflow
@@ -44,7 +45,8 @@ pnpm build
 Filtering rules:
 - Included: `publish: true`
 - Excluded: `private: true`, `draft: true`
-- Excluded paths: `.obsidian`, `.git`, `Templates`, `zArchive`, `Excalidraw`, `landing`
+- Excluded paths: `.obsidian`, `.git`, `Templates`, `zArchive`, `Excalidraw`, test fixture directories
+- Recursion protection: paths resolving into the site repo root are auto-skipped (so a nested repo does not self-publish)
 
 ## Search and feed generation
 - Build search index: `pnpm search:build` -> `public/search-index.json`
@@ -59,6 +61,13 @@ Filtering rules:
 5. Open search dialog, query terms from title/body/tags.
 6. Open `/graph`.
 7. Toggle dark mode.
+
+## Local static deploy preview
+```bash
+pnpm build
+npx serve@latest out -l tcp://127.0.0.1:4173
+open -a \"Google Chrome\" http://127.0.0.1:4173
+```
 
 ## Repo structure
 - `app/`: Next App Router routes (`/docs`, `/tags`, `/graph`, sitemap, robots)

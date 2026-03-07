@@ -15,6 +15,7 @@
 - [x] Milestone 5 - Search and knowledge features
 - [x] Milestone 6 - SEO, feeds, deployment workflows
 - [x] Milestone 7 - Hardening and handoff
+- [x] Milestone 8 - UI refresh, Playwright visual QA, and preview deploy
 
 ## Milestone Status Log
 ### Milestone 1
@@ -170,9 +171,50 @@ How to verify:
 Tradeoffs:
 - Additional E2E UI coverage can be expanded in future iterations.
 
+### Milestone 8
+Status: Completed
+
+Files created/updated:
+- `docs/exec-plans/completed/ui-refresh-live-preview.md`
+- `plans.md`
+- `app/globals.css`
+- `app/layout.tsx`
+- `app/page.tsx`
+- `app/docs/page.tsx`
+- `app/docs/[...slug]/page.tsx`
+- `app/tags/[tag]/page.tsx`
+- `app/graph/page.tsx`
+- `components/layout/*`
+- `components/primitives/*`
+- `components/content/home-hero.tsx`
+- `tests/e2e/ui-smoke.spec.ts`
+- `tests/unit/sync-rules.test.ts`
+- `scripts/sync-vault.mts`
+- `documentation.md`
+- `docs/design-system.md`
+- `docs/deployment.md`
+
+What works now:
+- Premium visual refresh is applied across home/docs/note/tag/graph routes.
+- Command search (`Cmd/Ctrl + K`) and theme switcher are upgraded with polished interactions.
+- Playwright e2e visual smoke test covers key routes and screenshot capture.
+- Sync filtering no longer hard-blocks `landing/` content and now uses recursion-safe path checks.
+
+How to verify:
+- `pnpm content:sync`
+- `pnpm lint`
+- `pnpm typecheck`
+- `pnpm test`
+- `pnpm build`
+- `pnpm test:e2e`
+- Open `http://127.0.0.1:3000` and `http://127.0.0.1:4173`
+
+Tradeoffs:
+- Local sync currently depends on the user’s `publish: true` frontmatter; unpublished notes stay hidden by design.
+
 ## Bug Notes
 - Fixed static export failure for catch-all docs route by generating parameters from real note slugs.
-- Fixed vault sync recursion by excluding `landing/` path from sync source.
+- Fixed vault sync recursion without hard-excluding `landing/` by resolving absolute path overlap with repo root.
 - Fixed script module format issues by using `tsx`-friendly `.ts` script entries and async main wrappers.
 
 ## Verification Checklist
@@ -181,6 +223,7 @@ Tradeoffs:
 - [x] `pnpm typecheck`
 - [x] `pnpm test`
 - [x] `pnpm build`
+- [x] `pnpm test:e2e`
 
 ## Decisions and Defaults
 - Next.js selected over Astro due to React-first interactive UI and Base UI/Motion integration.
@@ -198,6 +241,7 @@ Tradeoffs:
 1. `pnpm content:sync`
 2. `pnpm dev`
 3. Browse `/docs`, open notes, validate backlinks/related/TOC.
-4. Run search dialog and query title/body/tag terms.
+4. Run search dialog (`Cmd/Ctrl + K`) and query title/body/tag terms.
 5. Open `/graph`.
 6. `pnpm build` and verify sitemap/robots/RSS artifacts.
+7. `npx serve@latest out -l tcp://127.0.0.1:4173` for static preview.

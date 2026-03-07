@@ -45,3 +45,5 @@
 ### 2) Separate vault + mirror into site repo (default)
 - Better separation of private authoring and public site.
 - Uses `pnpm content:sync` to mirror only published notes/assets.
+- Sync excludes system/template/archive folders and test fixtures.
+- Sync also guards against self-referential recursion by skipping paths that resolve to the site repo root.
