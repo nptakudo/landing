@@ -217,6 +217,7 @@ Tradeoffs:
 - Fixed static export failure for catch-all docs route by generating parameters from real note slugs.
 - Fixed vault sync recursion without hard-excluding `landing/` by resolving absolute path overlap with repo root.
 - Fixed script module format issues by using `tsx`-friendly `.ts` script entries and async main wrappers.
+- Fixed Vercel `NOT_FOUND` deployment issue by pinning `framework: nextjs` in `vercel.json` and redeploying production alias.
 
 ## Verification Checklist
 - [x] `pnpm content:sync`

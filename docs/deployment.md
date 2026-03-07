@@ -3,6 +3,7 @@
 ## Primary deployment: Vercel
 - CI workflow: `.github/workflows/ci.yml`
 - Deploy workflow: `.github/workflows/deploy-vercel.yml`
+- `vercel.json` pins framework detection (`nextjs`) to avoid static `NOT_FOUND` deployments from mis-detected project settings.
 - Required secrets:
   - `VERCEL_TOKEN`
   - `VERCEL_ORG_ID`
@@ -25,6 +26,7 @@
 - Best Next.js integration.
 - Simplest preview + production deployments.
 - Works with static export output.
+- Preview deployment URLs can be access-protected depending on team SSO policy; production alias can be promoted for public sharing.
 
 ### Cloudflare Pages
 - Strong global edge delivery.

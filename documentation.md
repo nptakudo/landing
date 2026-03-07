@@ -53,6 +53,10 @@ Filtering rules:
 - Build RSS: `pnpm rss:build` -> `public/rss.xml`
 - Full build runs both automatically.
 
+## Vercel deploy note
+- `vercel.json` is required for correct framework detection (`nextjs`).
+- If Vercel preview URLs show access errors, use the production alias for sharing or adjust SSO/deployment protection settings.
+
 ## Local demo checklist
 1. `pnpm content:sync`
 2. `pnpm dev`
