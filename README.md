@@ -1,3 +1,7 @@
+---
+publish: true
+---
+
 # Takudo Notes Site
 
 Personal docs website that publishes selected Obsidian notes as a static, searchable knowledge base.

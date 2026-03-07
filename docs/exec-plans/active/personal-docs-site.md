@@ -1,3 +1,8 @@
+---
+tags:
+  - docs
+---
+
 # Personal Docs Site Execution Plan
 
 State: Done
