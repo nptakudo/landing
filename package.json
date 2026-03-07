@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "next build --webpack",
+    "build": "pnpm search:build && pnpm rss:build && next build --webpack",
     "start": "next start",
     "lint": "eslint .",
     "typecheck": "tsc --project tsconfig.typecheck.json --noEmit",
@@ -15,7 +15,9 @@
     "format:write": "prettier --write .",
     "content:sync": "tsx scripts/sync-vault.mts",
     "content:watch": "tsx scripts/watch-vault.mts",
-    "search:build": "tsx scripts/build-search-index.mts"
+    "search:build": "tsx scripts/build-search-index.ts",
+    "predev": "pnpm search:build",
+    "rss:build": "tsx scripts/build-rss.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.2.0",

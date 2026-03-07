@@ -1,9 +1,11 @@
 "use client";
 
 import { Dialog } from "@base-ui/react/dialog";
+import MiniSearch from "minisearch";
 import { motion } from "motion/react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import type { SearchIndexEntry } from "@/lib/search/types";
 
 type SearchItem = {
   title: string;
@@ -11,20 +13,83 @@ type SearchItem = {
   description?: string;
 };
 
+type SearchPayload = {
+  generatedAt: string;
+  entries: SearchIndexEntry[];
+};
+
 export function CommandDialog({ items }: { items: SearchItem[] }) {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
+  const [searchIndex, setSearchIndex] = useState<MiniSearch<SearchIndexEntry> | null>(null);
+
+  useEffect(() => {
+    if (!open || searchIndex) {
+      return;
+    }
+
+    let mounted = true;
+
+    async function loadIndex() {
+      try {
+        const response = await fetch("/search-index.json");
+        if (!response.ok) {
+          return;
+        }
+
+        const payload = (await response.json()) as SearchPayload;
+        const mini = new MiniSearch<SearchIndexEntry>({
+          fields: ["title", "aliases", "tags", "headings", "body"],
+          storeFields: ["slug", "title", "body"],
+          searchOptions: {
+            boost: { title: 4, aliases: 3, tags: 2, headings: 2 },
+            prefix: true,
+            fuzzy: 0.15,
+          },
+        });
+
+        mini.addAll(payload.entries);
+
+        if (mounted) {
+          setSearchIndex(mini);
+        }
+      } catch {
+        // Fallback behavior uses prop-provided items.
+      }
+    }
+
+    loadIndex();
+
+    return () => {
+      mounted = false;
+    };
+  }, [open, searchIndex]);
 
   const filtered = useMemo(() => {
-    if (!query.trim()) {
+    const normalized = query.trim();
+
+    if (!normalized) {
       return items.slice(0, 8);
     }
 
-    const normalized = query.toLowerCase();
+    if (searchIndex) {
+      return searchIndex
+        .search(normalized)
+        .slice(0, 8)
+        .map((result) => ({
+          title: result.title,
+          href: `/docs/${result.slug}`,
+          description: result.body.slice(0, 120),
+        }));
+    }
+
     return items
-      .filter((item) => item.title.toLowerCase().includes(normalized))
+      .filter((item) => {
+        const haystack = `${item.title} ${item.description ?? ""}`.toLowerCase();
+        return haystack.includes(normalized.toLowerCase());
+      })
       .slice(0, 8);
-  }, [items, query]);
+  }, [items, query, searchIndex]);
 
   return (
     <Dialog.Root open={open} onOpenChange={setOpen}>
@@ -42,7 +107,7 @@ export function CommandDialog({ items }: { items: SearchItem[] }) {
             <Dialog.Title className="text-sm font-semibold">Search notes</Dialog.Title>
             <input
               className="mt-3 w-full rounded-xl border border-[var(--border)] bg-[var(--panel)] px-3 py-2 text-sm outline-none ring-[var(--ring)] focus:ring-2"
-              placeholder="Search by title"
+              placeholder="Search title, aliases, tags, headings, body"
               value={query}
               onChange={(event) => setQuery(event.target.value)}
             />
@@ -56,7 +121,9 @@ export function CommandDialog({ items }: { items: SearchItem[] }) {
                   >
                     <p className="text-sm font-medium">{item.title}</p>
                     {item.description ? (
-                      <p className="mt-1 text-xs text-[var(--muted)]">{item.description}</p>
+                      <p className="mt-1 line-clamp-2 text-xs text-[var(--muted)]">
+                        {item.description}
+                      </p>
                     ) : null}
                   </Link>
                 </li>
