@@ -1,6 +1,6 @@
 # Personal Docs Site Execution Plan
 
-State: In Progress
+State: Done
 
 ## Problem
 Build a production-quality personal docs site that publishes selected Obsidian notes, with strong search/navigation/backlink behavior and static deployment.
@@ -20,7 +20,7 @@ Build a production-quality personal docs site that publishes selected Obsidian n
 - [x] Milestone 1: planning and docs bootstrap
 - [x] Milestone 2: app scaffold and design system foundation
 - [x] Milestone 3: content sync and normalization pipeline
-- [ ] Milestone 4: core site experience
-- [ ] Milestone 5: search and graph features
-- [ ] Milestone 6: SEO, feed, deployment
-- [ ] Milestone 7: hardening and handoff
+- [x] Milestone 4: core site experience
+- [x] Milestone 5: search and graph features
+- [x] Milestone 6: SEO, feed, deployment
+- [x] Milestone 7: hardening and handoff

@@ -35,3 +35,5 @@ public/obsidian-assets/**
 # local platform files
 .vercel
 *.tsbuildinfo
+public/search-index.json
+public/rss.xml

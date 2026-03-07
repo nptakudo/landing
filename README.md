@@ -1,36 +1,83 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Takudo Notes Site
 
-## Getting Started
+Personal docs website that publishes selected Obsidian notes as a static, searchable knowledge base.
 
-First, run the development server:
+## Stack
+- Next.js App Router (static export)
+- React + TypeScript
+- Tailwind CSS
+- Base UI primitives
+- Motion animations
+- MiniSearch (client-side full-text search)
 
+## Quick start
 ```bash
-npm run dev
-# or
-yarn dev
-# or
+corepack enable
+corepack prepare pnpm@9.12.3 --activate
+pnpm install
+cp .env.example .env.local
+pnpm content:sync
 pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Content workflow
+1. Author notes in Obsidian vault (`OBSIDIAN_VAULT_PATH`).
+2. Mark publishable notes with `publish: true` frontmatter.
+3. Run `pnpm content:sync` to mirror publishable notes into `content/notes` and referenced assets into `public/obsidian-assets`.
+4. Build/deploy site from repo state.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Filters
+- Included: `publish: true`
+- Excluded: `draft: true`, `private: true`
+- Path exclusions: `.obsidian`, `.git`, `Templates`, `zArchive`, `Excalidraw`, `landing`
 
-## Learn More
+## Commands
+- `pnpm dev`: local dev server
+- `pnpm lint`: ESLint
+- `pnpm typecheck`: TypeScript type check
+- `pnpm test`: Vitest unit tests
+- `pnpm build`: build search index + RSS + static site export
+- `pnpm content:sync`: sync publishable vault notes and assets
+- `pnpm content:watch`: watch vault and sync on change
+- `pnpm search:build`: generate `public/search-index.json`
+- `pnpm rss:build`: generate `public/rss.xml`
 
-To learn more about Next.js, take a look at the following resources:
+## Features
+- Homepage with recent notes and tag highlights
+- Docs index and generated note pages
+- Nested sidebar explorer from folder hierarchy
+- Cmd-K style search dialog powered by MiniSearch
+- Obsidian wikilink resolution + backlinks
+- Tag pages
+- Related notes
+- TOC from headings
+- Reading-time metadata
+- Graph overview page
+- Dark mode
+- Sitemap + robots + RSS
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Deployment
+### Primary: Vercel
+- CI workflow: `.github/workflows/ci.yml`
+- Deploy workflow: `.github/workflows/deploy-vercel.yml`
+- Required GitHub secrets: `VERCEL_TOKEN`, `VERCEL_ORG_ID`, `VERCEL_PROJECT_ID`
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Alternatives
+- Netlify / Cloudflare Pages / GitHub Pages supported via static export output in `out/`.
 
-## Deploy on Vercel
+## Repository map
+- `app/`: routes and metadata
+- `components/`: UI and layout components
+- `lib/content`: content loader/normalization/graph logic
+- `lib/obsidian`: Obsidian syntax parsing
+- `lib/search`: search index generation
+- `scripts/`: sync/build scripts
+- `content/example`: committed demo notes
+- `docs/`: source-of-truth docs
+- `tests/`: unit fixtures and tests
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Notes
+- Synced private vault content is intentionally gitignored (`content/notes/**`, `public/obsidian-assets/**`).
+- When no synced content exists, app falls back to `content/example` for deterministic local runs.

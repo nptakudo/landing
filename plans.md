@@ -3,18 +3,18 @@
 ## Architecture Overview
 - Framework: Next.js App Router with static export (`output: 'export'`).
 - Content source: Obsidian vault mirrored into repo-local `content/notes`.
-- Rendering: Markdown/MDX transformed through a normalization pipeline.
-- Knowledge features: backlinks, tags, related notes, TOC, search index, optional graph view.
+- Rendering: Markdown transformed through normalization and wikilink resolution.
+- Knowledge features: backlinks, tags, related notes, TOC, search index, graph overview.
 - Deployment: Vercel primary, static-export portable to Netlify/Cloudflare/GitHub Pages.
 
 ## Milestones
 - [x] Milestone 1 - Planning and repository bootstrap
 - [x] Milestone 2 - App scaffold and design system foundation
 - [x] Milestone 3 - Vault sync and normalization pipeline
-- [ ] Milestone 4 - Core site experience
-- [ ] Milestone 5 - Search and knowledge features
-- [ ] Milestone 6 - SEO, feeds, deployment workflows
-- [ ] Milestone 7 - Hardening and handoff
+- [x] Milestone 4 - Core site experience
+- [x] Milestone 5 - Search and knowledge features
+- [x] Milestone 6 - SEO, feeds, deployment workflows
+- [x] Milestone 7 - Hardening and handoff
 
 ## Milestone Status Log
 ### Milestone 1
@@ -32,47 +32,24 @@ Files created/updated:
 - `docs/exec-plans/active/personal-docs-site.md`
 
 What works now:
-- Source-of-truth documentation exists and is aligned to project constraints.
-- Execution plan is now tracked inside repo under `docs/exec-plans/active`.
+- Source-of-truth documentation and execution plan tracking are present.
 
 How to verify:
-- Open each `docs/*.md` file and confirm architecture/content/deployment policies are defined.
+- Open docs files and verify policies are defined.
 
 Tradeoffs:
-- Detailed implementation specifics deferred to subsequent milestones.
+- Detailed implementation deferred to later milestones.
 
 ### Milestone 2
 Status: Completed
 
 Files created/updated:
-- `package.json`
-- `next.config.ts`
-- `tsconfig.typecheck.json`
-- `eslint.config.mjs`
-- `vitest.config.ts`
-- `playwright.config.ts`
-- `.prettierrc.json`
-- `.prettierignore`
-- `app/layout.tsx`
-- `app/page.tsx`
-- `app/docs/page.tsx`
-- `app/docs/[...slug]/page.tsx`
-- `app/tags/[tag]/page.tsx`
-- `app/graph/page.tsx`
-- `app/globals.css`
-- `components/layout/*`
-- `components/primitives/*`
-- `components/providers/theme-provider.tsx`
-- `lib/site/config.ts`
-- `lib/utils.ts`
-- `tests/setup/vitest.setup.ts`
-- `tests/unit/utils.test.ts`
+- Next app/tooling scaffold (`app/`, `package.json`, lint/test/typecheck/build config)
+- Base UI + Motion shell and reusable primitives
 
 What works now:
-- App Router project scaffold with static export-compatible route structure.
-- Base UI + Motion based shell and reusable primitives are integrated.
-- Dark mode toggle, top nav, sidebar explorer, and starter docs/tag/graph routes render.
-- Lint/typecheck/test/build commands are wired and passing.
+- App boots with dark mode, top nav, sidebar shell, docs/tag/graph routes.
+- Lint/typecheck/test/build pipeline runs.
 
 How to verify:
 - `pnpm dev`
@@ -82,7 +59,7 @@ How to verify:
 - `pnpm build`
 
 Tradeoffs:
-- Milestone 2 used temporary docs routes; Milestone 3 replaced them with real generated content routes.
+- Used fallback route placeholders before real content loading was ready.
 
 ### Milestone 3
 Status: Completed
@@ -90,37 +67,113 @@ Status: Completed
 Files created/updated:
 - `scripts/sync-vault.mts`
 - `scripts/watch-vault.mts`
-- `lib/content/types.ts`
-- `lib/content/config.ts`
-- `lib/content/load-content.ts`
+- `lib/content/*`
 - `lib/obsidian/wikilinks.ts`
-- `content/example/*.md`
-- `app/page.tsx`
-- `app/docs/page.tsx`
-- `app/docs/[...slug]/page.tsx`
-- `app/tags/[tag]/page.tsx`
-- `app/graph/page.tsx`
-- `tests/unit/wikilinks.test.ts`
-- `tests/unit/content-loader.test.ts`
-- `.gitignore`
+- `content/example/*`
+- docs/tag/graph pages wired to normalized note graph
+- parser + loader tests
 
 What works now:
-- Local sync script imports published Obsidian notes and referenced assets.
-- Parser supports wikilinks, aliases, tags, headings TOC, reading time, backlinks, and related note scoring.
-- Docs/tag/graph routes are generated from normalized content.
-- Strict unresolved-link validation is enforced during production build.
-- Fallback example content is used when synced content is empty.
+- Syncs `publish: true` notes and referenced embeds.
+- Derives backlinks, TOC, related notes, reading time, tags.
+- Enforces unresolved-link build failures (strict mode).
 
 How to verify:
 - `pnpm content:sync`
-- `pnpm lint`
-- `pnpm typecheck`
 - `pnpm test`
 - `pnpm build`
 
 Tradeoffs:
-- Embedded non-image assets are rendered as links.
-- `.excalidraw.md` note pages are excluded from sync in v1.
+- Excludes raw `.excalidraw.md` pages in v1.
+
+### Milestone 4
+Status: Completed
+
+Files created/updated:
+- `app/layout.tsx`
+- `components/layout/*`
+- `lib/content/navigation.ts`
+- `app/docs/[...slug]/page.tsx`
+
+What works now:
+- Sidebar navigation generated from note folders.
+- Search trigger and top navigation integrated with note data.
+- Note page includes breadcrumbs, TOC, backlinks, related notes, pager.
+
+How to verify:
+- `pnpm dev`
+- Open `/docs` and browse notes with sidebar navigation.
+
+Tradeoffs:
+- Mobile drawer nav remains minimal (desktop-first sidebar behavior).
+
+### Milestone 5
+Status: Completed
+
+Files created/updated:
+- `components/primitives/command-dialog.tsx`
+- `scripts/build-search-index.ts`
+- `lib/search/types.ts`
+
+What works now:
+- Full-text search index includes title, aliases, tags, headings, body.
+- Command dialog loads generated index and queries with MiniSearch.
+
+How to verify:
+- `pnpm search:build`
+- `pnpm dev`
+- Search via dialog and validate body/tag/title matches.
+
+Tradeoffs:
+- Search index is loaded on demand when opening the dialog.
+
+### Milestone 6
+Status: Completed
+
+Files created/updated:
+- `app/sitemap.ts`
+- `app/robots.ts`
+- `scripts/build-rss.ts`
+- `.github/workflows/ci.yml`
+- `.github/workflows/deploy-vercel.yml`
+- `docs/deployment.md`
+
+What works now:
+- Sitemap and robots are statically generated.
+- RSS is generated during build.
+- CI and Vercel deploy workflows are defined.
+
+How to verify:
+- `pnpm build`
+- Inspect routes `/sitemap.xml`, `/robots.txt` and `public/rss.xml`.
+
+Tradeoffs:
+- Vercel deploy workflow expects configured repository secrets.
+
+### Milestone 7
+Status: Completed
+
+Files created/updated:
+- `README.md`
+- `documentation.md`
+- `.env.example`
+- `.gitignore` hardening for synced private content
+- `docs/exec-plans/active/personal-docs-site.md`
+
+What works now:
+- Setup and publishing docs are complete and aligned with implementation.
+- Synced private notes/assets are gitignored by default.
+
+How to verify:
+- Review docs and run full command checklist.
+
+Tradeoffs:
+- Additional E2E UI coverage can be expanded in future iterations.
+
+## Bug Notes
+- Fixed static export failure for catch-all docs route by generating parameters from real note slugs.
+- Fixed vault sync recursion by excluding `landing/` path from sync source.
+- Fixed script module format issues by using `tsx`-friendly `.ts` script entries and async main wrappers.
 
 ## Verification Checklist
 - [x] `pnpm content:sync`
@@ -130,10 +183,10 @@ Tradeoffs:
 - [x] `pnpm build`
 
 ## Decisions and Defaults
-- Next.js selected over Astro due to React-first interactive UI requirements and Base UI/Motion alignment.
-- Publish policy is strict opt-in (`publish: true`) with hard blocks for `draft/private`.
+- Next.js selected over Astro due to React-first interactive UI and Base UI/Motion integration.
+- Publishing is strict opt-in (`publish: true`) with hard blocks for `draft/private`.
 - Separate-vault mirroring is the default workflow.
-- Vercel is primary hosting target.
+- Vercel is the primary hosting target.
 
 ## Risk Register
 - Private note leakage if publish filtering is wrong.
@@ -142,9 +195,9 @@ Tradeoffs:
 - Attachment path collisions from duplicated filenames.
 
 ## Demo Script
-1. Run vault sync into `content/notes`.
-2. Start local dev server.
-3. Browse docs index and open notes.
-4. Verify backlinks, tags, TOC, related notes.
-5. Open search command dialog and query by title/tag/body.
-6. Build and deploy from CI.
+1. `pnpm content:sync`
+2. `pnpm dev`
+3. Browse `/docs`, open notes, validate backlinks/related/TOC.
+4. Run search dialog and query title/body/tag terms.
+5. Open `/graph`.
+6. `pnpm build` and verify sitemap/robots/RSS artifacts.

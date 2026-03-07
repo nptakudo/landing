@@ -1,62 +1,79 @@
 # Documentation
 
 ## What this project is
-A personal documentation website that publishes selected notes from a local Obsidian vault into a static website optimized for reading, navigation, backlinks, and search.
+Takudo Notes Site is a static personal documentation website that publishes selected notes from a local Obsidian vault. It behaves like a docs site + digital garden + personal wiki with backlinks, tags, graph view, and full-text search.
 
 ## Local setup
+Requirements:
 - Node.js 22+
-- Corepack enabled
-- `pnpm` 9+
+- Corepack
+- pnpm 9+
 
-Commands:
-- `corepack enable`
-- `corepack prepare pnpm@9.12.3 --activate`
-- `pnpm install`
+Setup:
+```bash
+corepack enable
+corepack prepare pnpm@9.12.3 --activate
+pnpm install
+cp .env.example .env.local
+```
 
 ## One-command dev start
-- `pnpm dev`
+```bash
+pnpm dev
+```
 
-## Quality commands
-- Lint: `pnpm lint`
-- Typecheck: `pnpm typecheck`
-- Unit tests: `pnpm test`
-- Production build: `pnpm build`
+## Validate quality
+```bash
+pnpm lint
+pnpm typecheck
+pnpm test
+pnpm build
+```
 
-## Content sync and export workflow
-- Sync published notes from Obsidian vault: `pnpm content:sync`
-- Watch vault and resync on changes: `pnpm content:watch`
-- Build search index artifact: `pnpm search:build`
+## Publish workflow
+### Option 1: Vault inside site repo
+- Keep your Obsidian vault under this repository.
+- Mark publishable notes with `publish: true`.
+- Run `pnpm content:sync` and commit site changes.
 
-Sync behavior:
-- Source vault default: `/Users/takudo/Documents/TakudoNotes`
-- Override with env: `OBSIDIAN_VAULT_PATH=/path/to/vault pnpm content:sync`
-- Includes only notes with `publish: true`
-- Excludes notes with `private: true` or `draft: true`
-- Excludes `.obsidian`, `.git`, `Templates`, `zArchive`, `Excalidraw`, and `landing` paths
-- Copies only referenced embedded assets into `public/obsidian-assets`
+### Option 2: Separate vault repo (default)
+- Keep the vault in a separate repository/path.
+- Set `OBSIDIAN_VAULT_PATH`.
+- Run `pnpm content:sync` to mirror publishable notes into `content/notes`.
 
-## Demo guide
-1. Run `pnpm content:sync`.
-2. Run `pnpm dev`.
-3. Open `/`, `/docs`, `/docs/welcome`, `/tags/docs`, `/graph`.
-4. Open a note and verify TOC, backlinks, related notes, and tag links.
-5. Toggle dark mode from top-right switch.
-6. Build with `pnpm build` and confirm static routes are generated.
+Filtering rules:
+- Included: `publish: true`
+- Excluded: `private: true`, `draft: true`
+- Excluded paths: `.obsidian`, `.git`, `Templates`, `zArchive`, `Excalidraw`, `landing`
 
-## Repository structure
-- `app/`: Next.js App Router routes
-- `components/layout`: app shell components
-- `components/primitives`: reusable UI primitives
-- `components/content`: page-specific components
-- `components/providers`: app-wide providers
-- `lib/content`: content loading, normalization, graph derivation
-- `lib/obsidian`: Obsidian syntax parsing helpers
-- `docs/`: source-of-truth architecture and behavior docs
-- `tests/`: unit and e2e tests
-- `scripts/`: sync/watch/search scripts
+## Search and feed generation
+- Build search index: `pnpm search:build` -> `public/search-index.json`
+- Build RSS: `pnpm rss:build` -> `public/rss.xml`
+- Full build runs both automatically.
+
+## Local demo checklist
+1. `pnpm content:sync`
+2. `pnpm dev`
+3. Open `/docs` and a note page.
+4. Verify backlinks, related notes, tags, and TOC.
+5. Open search dialog, query terms from title/body/tags.
+6. Open `/graph`.
+7. Toggle dark mode.
+
+## Repo structure
+- `app/`: Next App Router routes (`/docs`, `/tags`, `/graph`, sitemap, robots)
+- `components/`: layout, primitives, content widgets
+- `lib/content`: note loading, parsing, graph/backlink derivation
+- `lib/obsidian`: wikilink/tag parsing
+- `lib/search`: shared search index types
+- `scripts/`: sync/watch/search/rss generators
+- `content/example`: safe fallback demo notes
+- `content/notes`: synced notes (gitignored)
+- `public/obsidian-assets`: synced assets (gitignored)
+- `docs/`: source-of-truth docs
 
 ## Troubleshooting
-- `pnpm` not found: run `corepack enable` then `corepack prepare pnpm@9.12.3 --activate`.
-- Build export fails on dynamic route params: ensure dynamic routes implement `generateStaticParams`.
-- Unresolved wikilinks fail build: fix links in published notes or set `CONTENT_STRICT_LINKS=false` locally.
-- No docs generated after sync: confirm notes have `publish: true` and are not blocked by `private/draft` filters.
+- `pnpm` missing: run Corepack setup commands above.
+- Build fails on unresolved links: fix wikilinks in published notes or set `CONTENT_STRICT_LINKS=false` locally.
+- No notes after sync: check `publish: true` and exclusion filters.
+- Search dialog empty: run `pnpm search:build` or full `pnpm build`.
