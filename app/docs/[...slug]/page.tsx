@@ -2,10 +2,12 @@ import Link from "next/link";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { notFound } from "next/navigation";
+import type { Metadata } from "next";
 import { Breadcrumbs } from "@/components/primitives/breadcrumbs";
 import { Pager } from "@/components/primitives/pager";
 import { TableOfContents } from "@/components/primitives/toc";
 import { getAllNotes, getNoteBySlug } from "@/lib/content/load-content";
+import { siteConfig } from "@/lib/site/config";
 
 export const dynamicParams = false;
 
@@ -14,6 +16,32 @@ export async function generateStaticParams() {
   return notes.map((note) => ({
     slug: note.slug.split("/"),
   }));
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string[] }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const note = await getNoteBySlug(slug);
+
+  if (!note) {
+    return {
+      title: `${siteConfig.title} · Note not found`,
+    };
+  }
+
+  return {
+    title: `${note.title} · ${siteConfig.title}`,
+    description: note.summary,
+    openGraph: {
+      title: note.title,
+      description: note.summary,
+      url: `${siteConfig.url}/docs/${note.slug}`,
+      type: "article",
+    },
+  };
 }
 
 export default async function NotePage({

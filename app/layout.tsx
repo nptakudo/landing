@@ -4,6 +4,8 @@ import { ThemeProvider } from "@/components/providers/theme-provider";
 import { TopNav } from "@/components/layout/top-nav";
 import { Sidebar } from "@/components/layout/sidebar";
 import { siteConfig } from "@/lib/site/config";
+import { getAllNotes } from "@/lib/content/load-content";
+import { buildNavigationTree } from "@/lib/content/navigation";
 import "./globals.css";
 
 const manrope = Manrope({
@@ -26,11 +28,19 @@ export const metadata: Metadata = {
   description: siteConfig.description,
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const notes = await getAllNotes();
+  const navNodes = buildNavigationTree(notes);
+  const searchItems = notes.map((note) => ({
+    title: note.title,
+    href: `/docs/${note.slug}`,
+    description: note.summary,
+  }));
+
   return (
     <html lang="en" suppressHydrationWarning>
       <body
@@ -38,9 +48,9 @@ export default function RootLayout({
       >
         <ThemeProvider>
           <div className="min-h-screen bg-[var(--background)] text-[var(--text)]">
-            <TopNav />
+            <TopNav items={searchItems} />
             <div className="mx-auto flex max-w-7xl">
-              <Sidebar />
+              <Sidebar nodes={navNodes} />
               <main className="w-full px-4 py-8 sm:px-6 lg:px-10">{children}</main>
             </div>
           </div>

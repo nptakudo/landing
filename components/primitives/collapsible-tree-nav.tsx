@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { Collapsible } from "@base-ui/react/collapsible";
 
-type TreeNode = {
+export type TreeNode = {
   id: string;
   label: string;
   href?: string;
