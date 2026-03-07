@@ -10,7 +10,7 @@
 ## Milestones
 - [x] Milestone 1 - Planning and repository bootstrap
 - [x] Milestone 2 - App scaffold and design system foundation
-- [ ] Milestone 3 - Vault sync and normalization pipeline
+- [x] Milestone 3 - Vault sync and normalization pipeline
 - [ ] Milestone 4 - Core site experience
 - [ ] Milestone 5 - Search and knowledge features
 - [ ] Milestone 6 - SEO, feeds, deployment workflows
@@ -82,9 +82,48 @@ How to verify:
 - `pnpm build`
 
 Tradeoffs:
-- Docs catch-all route currently includes a temporary `/docs/welcome` page to satisfy static-export parameter requirements until real content generation lands in Milestone 3.
+- Milestone 2 used temporary docs routes; Milestone 3 replaced them with real generated content routes.
+
+### Milestone 3
+Status: Completed
+
+Files created/updated:
+- `scripts/sync-vault.mts`
+- `scripts/watch-vault.mts`
+- `lib/content/types.ts`
+- `lib/content/config.ts`
+- `lib/content/load-content.ts`
+- `lib/obsidian/wikilinks.ts`
+- `content/example/*.md`
+- `app/page.tsx`
+- `app/docs/page.tsx`
+- `app/docs/[...slug]/page.tsx`
+- `app/tags/[tag]/page.tsx`
+- `app/graph/page.tsx`
+- `tests/unit/wikilinks.test.ts`
+- `tests/unit/content-loader.test.ts`
+- `.gitignore`
+
+What works now:
+- Local sync script imports published Obsidian notes and referenced assets.
+- Parser supports wikilinks, aliases, tags, headings TOC, reading time, backlinks, and related note scoring.
+- Docs/tag/graph routes are generated from normalized content.
+- Strict unresolved-link validation is enforced during production build.
+- Fallback example content is used when synced content is empty.
+
+How to verify:
+- `pnpm content:sync`
+- `pnpm lint`
+- `pnpm typecheck`
+- `pnpm test`
+- `pnpm build`
+
+Tradeoffs:
+- Embedded non-image assets are rendered as links.
+- `.excalidraw.md` note pages are excluded from sync in v1.
 
 ## Verification Checklist
+- [x] `pnpm content:sync`
 - [x] `pnpm lint`
 - [x] `pnpm typecheck`
 - [x] `pnpm test`
