@@ -150,6 +150,10 @@ async function cleanDirectory(dir: string) {
   await Promise.all(
     entries.map(async (entry) => {
       const target = path.join(dir, entry.name);
+      if (entry.name === ".gitkeep") {
+        return;
+      }
+
       if (entry.isDirectory()) {
         await fs.rm(target, { recursive: true, force: true });
       } else {
