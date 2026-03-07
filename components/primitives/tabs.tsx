@@ -18,13 +18,13 @@ export function SimpleTabs({
 }) {
   return (
     <Tabs.Root defaultValue={defaultValue} className="space-y-4">
-      <Tabs.List className="inline-flex rounded-full border border-[var(--border)] bg-[var(--panel)] p-1">
+      <Tabs.List className="inline-flex rounded-full border border-[var(--border)] bg-[var(--surface-muted)] p-1">
         {tabs.map((tab) => (
           <Tabs.Tab
             key={tab.value}
             value={tab.value}
             className={cn(
-              "rounded-full px-3 py-1 text-xs font-semibold text-[var(--muted)]",
+              "rounded-full px-3.5 py-1.5 text-xs font-semibold text-[var(--muted)]",
               "data-[selected]:bg-[var(--text)] data-[selected]:text-[var(--background)]",
             )}
           >
@@ -36,7 +36,7 @@ export function SimpleTabs({
         <Tabs.Panel
           key={tab.value}
           value={tab.value}
-          className="rounded-2xl border border-[var(--border)] bg-[var(--panel)] p-4"
+          className="surface-card rounded-2xl p-5"
         >
           {tab.content}
         </Tabs.Panel>

@@ -15,13 +15,16 @@ export function Breadcrumbs({ items }: { items: BreadcrumbItem[] }) {
           return (
             <li key={`${item.label}-${index}`} className="flex items-center gap-2">
               {isLast || !item.href ? (
-                <span className="text-[var(--text)]">{item.label}</span>
+                <span className="font-medium text-[var(--text)]">{item.label}</span>
               ) : (
-                <Link href={item.href} className="hover:text-[var(--text)]">
+                <Link
+                  href={item.href}
+                  className="rounded-md px-1.5 py-0.5 hover:bg-[var(--surface-muted)] hover:text-[var(--text)]"
+                >
                   {item.label}
                 </Link>
               )}
-              {!isLast ? <span>/</span> : null}
+              {!isLast ? <span className="text-[var(--border-strong)]">/</span> : null}
             </li>
           );
         })}

@@ -11,10 +11,12 @@ export function ThemeSwitcher() {
     <motion.button
       type="button"
       whileTap={{ scale: 0.96 }}
-      className="inline-flex h-9 items-center rounded-full border border-[var(--border)] bg-[var(--panel)] px-3 text-xs font-semibold tracking-wide text-[var(--text)] transition-colors hover:border-[var(--border-strong)]"
+      whileHover={{ y: -1 }}
+      className="inline-flex h-10 items-center gap-1.5 rounded-full border border-[var(--border)] bg-[var(--surface)] px-3.5 text-xs font-semibold tracking-[0.08em] text-[var(--muted-strong)] shadow-sm hover:border-[var(--border-strong)]"
       onClick={() => setTheme(isDark ? "light" : "dark")}
       aria-label="Toggle theme"
     >
+      <span aria-hidden>{isDark ? "☼" : "☾"}</span>
       {isDark ? "Light" : "Dark"}
     </motion.button>
   );

@@ -1,23 +1,37 @@
 @import "tailwindcss";
 
 :root {
-  --background: #fbf9f6;
-  --panel: #f3efe9;
-  --text: #1c1a19;
-  --muted: #615a53;
-  --border: #dbd2c8;
-  --border-strong: #b7aa9a;
-  --ring: #8f7e6c;
+  --background: #f6f3ee;
+  --background-elevated: #fcfaf7;
+  --panel: #efebe4;
+  --surface: #ffffff;
+  --surface-muted: #f6f2eb;
+  --text: #1b1a1f;
+  --muted: #5f5b64;
+  --muted-strong: #3f3a43;
+  --border: #ddd4c7;
+  --border-strong: #beaf9a;
+  --ring: #8e7757;
+  --accent: #2c6a59;
+  --accent-soft: #ddf1ea;
+  --shadow-soft: 0 24px 52px -30px rgba(32, 25, 18, 0.35);
 }
 
 .dark {
-  --background: #121212;
-  --panel: #1c1c1c;
-  --text: #f5f1eb;
-  --muted: #b7ada1;
-  --border: #33302d;
-  --border-strong: #57514c;
-  --ring: #8a7f74;
+  --background: #0d1015;
+  --background-elevated: #121722;
+  --panel: #171d29;
+  --surface: #101621;
+  --surface-muted: #1a2230;
+  --text: #f4f6fb;
+  --muted: #b0b8c8;
+  --muted-strong: #d3d9e6;
+  --border: #283347;
+  --border-strong: #3a4a67;
+  --ring: #8da8f6;
+  --accent: #8ac8b7;
+  --accent-soft: #203f3a;
+  --shadow-soft: 0 20px 56px -34px rgba(0, 0, 0, 0.75);
 }
 
 @theme inline {
@@ -32,13 +46,112 @@
 
 body {
   background:
-    radial-gradient(circle at 0% 0%, color-mix(in oklab, var(--panel), transparent 15%), transparent 45%),
-    radial-gradient(circle at 100% 100%, color-mix(in oklab, var(--panel), transparent 18%), transparent 55%),
+    radial-gradient(circle at 0% 0%, color-mix(in oklab, var(--accent-soft), transparent 65%), transparent 42%),
+    radial-gradient(
+      circle at 100% 0%,
+      color-mix(in oklab, var(--panel), transparent 40%),
+      transparent 32%
+    ),
+    radial-gradient(circle at 88% 100%, color-mix(in oklab, var(--panel), transparent 35%), transparent 42%),
     var(--background);
   color: var(--text);
   font-family: var(--font-manrope), sans-serif;
+  min-height: 100vh;
+  text-rendering: optimizeLegibility;
 }
 
 ::selection {
   background: color-mix(in oklab, var(--ring), transparent 55%);
+}
+
+a,
+button,
+input {
+  transition:
+    color 160ms ease,
+    border-color 160ms ease,
+    background-color 160ms ease,
+    transform 160ms ease;
+}
+
+.surface-card {
+  border: 1px solid var(--border);
+  background: color-mix(in oklab, var(--surface), transparent 3%);
+  box-shadow: var(--shadow-soft);
+}
+
+.surface-muted {
+  border: 1px solid var(--border);
+  background: color-mix(in oklab, var(--surface-muted), transparent 4%);
+}
+
+.note-prose {
+  color: var(--muted-strong);
+  font-size: 1.03rem;
+  line-height: 1.9;
+}
+
+.note-prose h1,
+.note-prose h2,
+.note-prose h3,
+.note-prose h4 {
+  color: var(--text);
+  font-family: var(--font-newsreader), serif;
+  letter-spacing: -0.01em;
+}
+
+.note-prose h2 {
+  margin-top: 2.5rem;
+  margin-bottom: 1rem;
+  font-size: 1.7rem;
+}
+
+.note-prose h3 {
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+  font-size: 1.34rem;
+}
+
+.note-prose p,
+.note-prose ul,
+.note-prose ol,
+.note-prose blockquote {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.note-prose a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-decoration-thickness: 0.08em;
+  text-underline-offset: 0.2em;
+}
+
+.note-prose blockquote {
+  border-inline-start: 3px solid color-mix(in oklab, var(--accent), transparent 40%);
+  border-radius: 0.6rem;
+  background: color-mix(in oklab, var(--surface-muted), transparent 10%);
+  padding: 0.9rem 1rem;
+}
+
+.note-prose code {
+  border: 1px solid var(--border);
+  border-radius: 0.4rem;
+  background: color-mix(in oklab, var(--panel), transparent 24%);
+  padding: 0.14rem 0.4rem;
+  font-size: 0.9em;
+}
+
+.note-prose pre {
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  background: color-mix(in oklab, var(--surface), transparent 2%);
+  padding: 1rem;
+}
+
+.note-prose pre code {
+  border: 0;
+  background: transparent;
+  padding: 0;
 }

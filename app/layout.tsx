@@ -4,7 +4,7 @@ import { ThemeProvider } from "@/components/providers/theme-provider";
 import { TopNav } from "@/components/layout/top-nav";
 import { Sidebar } from "@/components/layout/sidebar";
 import { siteConfig } from "@/lib/site/config";
-import { getAllNotes } from "@/lib/content/load-content";
+import { getAllNotes, getAllTags } from "@/lib/content/load-content";
 import { buildNavigationTree } from "@/lib/content/navigation";
 import "./globals.css";
 
@@ -34,6 +34,7 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const notes = await getAllNotes();
+  const tags = await getAllTags();
   const navNodes = buildNavigationTree(notes);
   const searchItems = notes.map((note) => ({
     title: note.title,
@@ -48,10 +49,10 @@ export default async function RootLayout({
       >
         <ThemeProvider>
           <div className="min-h-screen bg-[var(--background)] text-[var(--text)]">
-            <TopNav items={searchItems} />
-            <div className="mx-auto flex max-w-7xl">
+            <TopNav items={searchItems} stats={{ notes: notes.length, tags: tags.length }} />
+            <div className="mx-auto flex w-full max-w-[1240px] gap-6 px-4 pb-14 sm:px-6 lg:px-8">
               <Sidebar nodes={navNodes} />
-              <main className="w-full px-4 py-8 sm:px-6 lg:px-10">{children}</main>
+              <main className="w-full py-8 lg:py-10">{children}</main>
             </div>
           </div>
         </ThemeProvider>
