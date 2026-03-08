@@ -30,11 +30,20 @@ jobs:
       DEFAULT_VAULT_PATH: ${{ github.workspace }}/content/example
 
     steps:
+      - name: Check Vercel secret availability
+        id: vercel
+        run: |
+          if [ -n "${VERCEL_TOKEN}" ] && [ -n "${VERCEL_ORG_ID}" ] && [ -n "${VERCEL_PROJECT_ID}" ]; then
+            echo "configured=true" >> "${GITHUB_OUTPUT}"
+          else
+            echo "configured=false" >> "${GITHUB_OUTPUT}"
+          fi
+
       - name: Check out site repository
         uses: actions/checkout@v4
 
       - name: Check out vault repository
-        if: ${{ vars.VAULT_REPO != '' }}
+        if: ${{ vars.VAULT_REPO != '' && steps.vercel.outputs.configured == 'true' }}
         uses: actions/checkout@v4
         with:
           repository: ${{ vars.VAULT_REPO }}
@@ -50,27 +59,26 @@ jobs:
             echo "OBSIDIAN_VAULT_PATH=${DEFAULT_VAULT_PATH}" >> "${GITHUB_ENV}"
           fi
 
-      - name: Validate Vercel secrets
-        run: |
-          test -n "${VERCEL_TOKEN}"
-          test -n "${VERCEL_ORG_ID}"
-          test -n "${VERCEL_PROJECT_ID}"
-
       - name: Set up Bun
+        if: ${{ steps.vercel.outputs.configured == 'true' }}
         uses: oven-sh/setup-bun@v2
         with:
           bun-version: latest
 
       - name: Install dependencies
+        if: ${{ steps.vercel.outputs.configured == 'true' }}
         run: bun install --frozen-lockfile
 
       - name: Ensure mirror directories exist
+        if: ${{ steps.vercel.outputs.configured == 'true' }}
         run: mkdir -p content/notes public/obsidian-assets
 
       - name: Sync published vault content
+        if: ${{ steps.vercel.outputs.configured == 'true' }}
         run: bun run content:sync
 
       - name: Pull Vercel project settings
+        if: ${{ steps.vercel.outputs.configured == 'true' }}
         run: |
           if [ "${GITHUB_REF}" = "refs/heads/main" ]; then
             bunx vercel@latest pull --yes --environment=production --token "${VERCEL_TOKEN}"
@@ -79,6 +87,7 @@ jobs:
           fi
 
       - name: Build Vercel output
+        if: ${{ steps.vercel.outputs.configured == 'true' }}
         run: |
           if [ "${GITHUB_REF}" = "refs/heads/main" ]; then
             bunx vercel@latest build --prod --token "${VERCEL_TOKEN}"
@@ -88,6 +97,7 @@ jobs:
 
       - name: Deploy to Vercel
         id: deploy
+        if: ${{ steps.vercel.outputs.configured == 'true' }}
         run: |
           if [ "${GITHUB_REF}" = "refs/heads/main" ]; then
             url="$(bunx vercel@latest deploy --prebuilt --prod --token "${VERCEL_TOKEN}")"
@@ -103,5 +113,10 @@ jobs:
             echo
             echo "- Ref: \`${GITHUB_REF}\`"
             echo "- Vault source: \`${OBSIDIAN_VAULT_PATH}\`"
-            echo "- URL: ${{ steps.deploy.outputs.deployment_url }}"
+            if [ "${{ steps.vercel.outputs.configured }}" = "true" ]; then
+              echo "- URL: ${{ steps.deploy.outputs.deployment_url }}"
+            else
+              echo "- Status: skipped"
+              echo "- Reason: missing Vercel repo secrets"
+            fi
           } >> "${GITHUB_STEP_SUMMARY}"

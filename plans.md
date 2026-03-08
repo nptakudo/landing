@@ -6,7 +6,7 @@
 - Architecture baseline: Next.js App Router with static export
 - Content model: separate vault mirror into `content/notes` plus `public/obsidian-assets`
 - Generated artifacts: search index, graph JSON, RSS, sitemap, and robots
-- Preview URL: pending
+- Preview URL: pending, Vercel secrets not configured in GitHub yet
 
 ## Milestone 1 - Mirror pipeline and published-note model
 
@@ -142,5 +142,6 @@ Preview URL:
 Tradeoffs:
 
 - deployment is documented and automated, but the first real preview URL depends on Vercel secrets being configured
+- the deploy workflow now skips cleanly when Vercel secrets are absent, so branch health stays readable while infra is unfinished
 - `SITE_URL` is documented for deploy parity even though the app currently reads the canonical URL from `site.config.ts`
 - milestone notes are accurate to the current worktree, including known implementation gaps outside this docs-only change

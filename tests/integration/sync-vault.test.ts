@@ -27,8 +27,8 @@ describe("syncPublishedNotes", () => {
 
     expect(result.mirroredNotes).toHaveLength(2);
     expect(result.mirroredAssets).toHaveLength(1);
-    await expect(fs.access(path.join(contentRoot, "Guides", "start-here.md"))).resolves.toBeNull();
-    await expect(fs.access(path.join(assetRoot, "assets", "hero.svg"))).resolves.toBeNull();
-    await expect(fs.access(path.join(contentRoot, "Private", "secret.md"))).rejects.toThrow();
+    await expect(fs.stat(path.join(contentRoot, "Guides", "start-here.md"))).resolves.toMatchObject({});
+    await expect(fs.stat(path.join(assetRoot, "assets", "hero.svg"))).resolves.toMatchObject({});
+    await expect(fs.stat(path.join(contentRoot, "Private", "secret.md"))).rejects.toThrow();
   });
 });

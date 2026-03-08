@@ -46,6 +46,7 @@ Behavior:
 
 - non-main refs run `vercel pull --environment=preview`, `vercel build`, and `vercel deploy --prebuilt`
 - `main` runs `vercel pull --environment=production`, `vercel build --prod`, and `vercel deploy --prebuilt --prod`
+- if `VERCEL_TOKEN`, `VERCEL_ORG_ID`, or `VERCEL_PROJECT_ID` are missing, the workflow skips deployment and writes that reason to the run summary instead of failing the branch
 
 The workflow writes the deployment URL to the GitHub Actions summary.
 
