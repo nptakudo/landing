@@ -247,3 +247,17 @@ Preview URL:
 Tradeoffs:
 
 - the GitHub-linked Vercel project still has mutable dashboard settings, but the committed `vercel.json` now defines the correct deploy shape and should override future drift
+
+## Milestone 6 - UI and Motion Refactor
+
+Status: in progress
+
+### Current objectives:
+- [ ] 1. Design system (`globals.css`) updated with Zed-inspired cool-gray + warm-accent palette, motion tokens, and grid texture
+- [ ] 2. Site Header (`site-header.tsx`) updated to full glass, active pill indicators, and keyboard badges
+- [ ] 3. Homepage Hero (`page.tsx`) updated with animated gradient mesh, lifted note cards on hover with animated borders
+- [ ] 4. Docs Shell Layout (`docs-shell.tsx`) updated with flush edge-attached sidebars and sticky positioning
+- [ ] 5. Sidebar Navigation (`sidebar-tree.tsx`) updated with accent border, collapsed states, and motion
+- [ ] 6. Note/Article Layout updated with reading progress bar and right TOC highlights
+- [ ] 7. Micro-components added: ProgressBar, KbdBadge, TagChip
+
