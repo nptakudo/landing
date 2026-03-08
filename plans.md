@@ -27,6 +27,7 @@
 - 2026-03-08: RSS snapshot drift in CI was caused by fixture files falling back to filesystem mtimes; the fixture vault now pins explicit `updated` dates so artifact snapshots stay stable across environments.
 - 2026-03-08: the exported-site `start` flow initially misrouted flat pages like `/docs`; route resolution now prefers `*.html` exports before nested `index.html` fallbacks, with unit coverage for the static server resolver.
 - 2026-03-08: Vitest external snapshot files kept regenerating an obsolete key for the deterministic artifact suite on CI, so that coverage now uses an inline serialized JSON snapshot instead of a separate `.snap` file.
+- 2026-03-08: the GitHub-linked Vercel branch preview returned `404 NOT_FOUND` because the project had drifted into a broken Next.js runtime configuration. The repo now commits `vercel.json` with a static-export build (`bun run export:site`) and `out/` output so GitHub-linked previews and local CLI deploys use the same deployment contract.
 
 ## Milestone 1 - Mirror pipeline and published-note model
 
@@ -213,3 +214,36 @@ Preview URL:
 Tradeoffs:
 
 - preview visibility is now public on the linked Vercel project; keep `ssoProtection` disabled if unauthenticated branch previews are still desired
+
+## Milestone 5 - GitHub preview repair and committed Vercel contract
+
+Status: complete on 2026-03-08
+
+Files changed:
+
+- `vercel.json`
+- `docs/deployment.md`
+- `plans.md`
+
+What works:
+
+- GitHub-linked Vercel previews no longer depend on mutable dashboard-only framework settings
+- the project deploys as a plain static export using `bun run export:site`
+- the branch preview alias can target a healthy static deployment rather than a failed Next.js runtime deployment
+
+Verification:
+
+- `bun run lint`
+- `bun run typecheck`
+- `bun test`
+- `bun run build`
+- local CLI deploy against the linked `landing` Vercel project
+- branch preview URL checked after alias repair
+
+Preview URL:
+
+- `https://landing-git-codex-obsidian-docs-site-v2-nptakudos-projects.vercel.app`
+
+Tradeoffs:
+
+- the GitHub-linked Vercel project still has mutable dashboard settings, but the committed `vercel.json` now defines the correct deploy shape and should override future drift

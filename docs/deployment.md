@@ -2,7 +2,7 @@
 
 ## Hosting model
 
-The primary deployment target is Vercel. The app is statically exported, so the build output remains portable, but Vercel is the operational default because it fits the App Router workflow and branch-preview model best.
+The primary deployment target is Vercel. The app is statically exported and deployed as a plain static output, not through the Next.js runtime on Vercel. That keeps branch previews portable and avoids coupling preview health to dashboard-only framework detection.
 
 ## Branch environments
 
@@ -47,6 +47,15 @@ Behavior:
 - non-main refs run `vercel pull --environment=preview`, `vercel build`, and `vercel deploy --prebuilt`
 - `main` runs `vercel pull --environment=production`, `vercel build --prod`, and `vercel deploy --prebuilt --prod`
 - if `VERCEL_TOKEN`, `VERCEL_ORG_ID`, or `VERCEL_PROJECT_ID` are missing, the workflow skips deployment and writes that reason to the run summary instead of failing the branch
+
+Committed Vercel config lives in `vercel.json`:
+
+- `installCommand`: `bun install`
+- `buildCommand`: `bun run export:site`
+- `outputDirectory`: `out`
+- `framework`: `null`
+
+That forces both local CLI deploys and GitHub-linked Vercel previews to ship the same static export instead of relying on mutable project-dashboard settings.
 
 The workflow writes the deployment URL to the GitHub Actions summary.
 
@@ -108,11 +117,15 @@ Use `bun run start` to serve the exported `out/` directory locally after a build
 
 ## Local Vercel preview
 
-The worktree is already linked to the `landing-v2` Vercel project. A local CLI preview deploy was verified on 2026-03-08 at:
+The GitHub-linked `landing` Vercel project now uses the committed static-export config. On 2026-03-08 the branch preview route `landing-git-codex-obsidian-docs-site-v2-nptakudos-projects.vercel.app` initially returned `404 NOT_FOUND` because the project had drifted into a broken Next.js runtime configuration in the Vercel dashboard.
 
-- `https://landing-v2-c1se4xz5q-nptakudos-projects.vercel.app`
+The fix was:
 
-Preview deployment protection was disabled for the linked `landing-v2` project, so the current branch preview is publicly reachable. If `401` responses return in the future, inspect the project's Deployment Protection setting and the `ssoProtection` field on the Vercel project config.
+- disable Vercel deployment protection for public previews
+- restore the project to a plain static-export deployment shape
+- commit `vercel.json` so future previews do not depend on mutable dashboard state
+
+If branch previews regress again, check both the latest deployment status in Vercel and whether the branch alias is still pointing at a failed deployment.
 
 `SITE_URL` is consumed at build time through `site.config.ts`, so deployment environments can override canonical URLs without patching source files.
 
