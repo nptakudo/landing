@@ -16,6 +16,7 @@
 - [x] Milestone 6 - SEO, feeds, deployment workflows
 - [x] Milestone 7 - Hardening and handoff
 - [x] Milestone 8 - UI refresh, Playwright visual QA, and preview deploy
+- [x] Milestone 9 - Zed visual parity for landing + docs shell
 
 ## Milestone Status Log
 ### Milestone 1
@@ -212,6 +213,50 @@ How to verify:
 
 Tradeoffs:
 - Local sync currently depends on the user’s `publish: true` frontmatter; unpublished notes stay hidden by design.
+
+### Milestone 9
+Status: Completed
+
+Files created/updated:
+- `plans.md`
+- `docs/design-system.md`
+- `docs/exec-plans/active/zed-visual-parity.md`
+- `app/globals.css`
+- `app/layout.tsx`
+- `app/page.tsx`
+- `app/docs/page.tsx`
+- `app/docs/[...slug]/page.tsx`
+- `components/layout/shell-frame.tsx`
+- `components/layout/top-nav.tsx`
+- `components/layout/sidebar.tsx`
+- `components/content/home-hero.tsx`
+- `components/primitives/command-dialog.tsx`
+- `components/primitives/theme-switcher.tsx`
+- `components/primitives/collapsible-tree-nav.tsx`
+- `components/primitives/toc.tsx`
+- `components/primitives/breadcrumbs.tsx`
+- `components/primitives/pager.tsx`
+- `tests/e2e/ui-smoke.spec.ts`
+- `docs/exec-plans/artifacts/zed-parity/*`
+
+What works now:
+- Landing (`/`) and docs shell (`/docs`, `/docs/[...slug]`) now use a Zed-inspired visual system with dual-theme support.
+- Shell behavior is route-aware: docs routes get a dedicated left explorer shell and mobile docs drawer.
+- Top navigation, search trigger, and theme controls now support explicit `landing`/`docs` presentation variants.
+- Note metadata features (stats, backlinks, related notes) now render inline below article content.
+- Playwright MCP parity captures were generated for target/local pages at `1440x900`, `1200x900`, and `390x844`.
+
+How to verify:
+- `pnpm lint`
+- `pnpm typecheck`
+- `pnpm test`
+- `pnpm build`
+- `pnpm test:e2e`
+- Review `test-results/parity/*.png` for Zed/local before/after reference checks.
+
+Tradeoffs:
+- Pixel-close parity targets structural and visual rhythm, not exact copy of proprietary assets.
+- Scope remains focused on landing/docs shell; tags/graph inherit shared tokens without full route redesign.
 
 ## Bug Notes
 - Fixed static export failure for catch-all docs route by generating parameters from real note slugs.

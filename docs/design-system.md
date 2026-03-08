@@ -1,35 +1,50 @@
 # Design System
 
 ## Visual direction
-- Minimal, typography-led reading experience with stronger information hierarchy.
-- Warm neutral light theme and deep graphite/blue dark theme.
-- Rounded structural cards, subtle elevation, restrained borders, and soft atmospheric gradients.
+- Zed-inspired editorial interface: clean technical typography, restrained borders, and soft depth.
+- Priority on reading rhythm and docs navigation clarity over decorative cards.
+- Landing and docs share one token system with route-specific shell variants.
 
 ## Stack
-- Tailwind CSS for tokenized styling.
-- Base UI primitives for accessible behavior.
-- Motion for intentional transitions.
+- Tailwind CSS v4 tokenized via CSS custom properties in `app/globals.css`.
+- Base UI primitives for accessible overlays and collapsibles.
+- Motion for small, intentional transitions with reduced-motion support.
 
 ## Typography
-- Display: Newsreader.
-- UI/body: Manrope.
-- Mono: JetBrains Mono.
-- Note prose uses custom `.note-prose` styles tuned for long-form readability.
+- UI/body: IBM Plex Sans.
+- Headings/display: IBM Plex Serif.
+- Code/inline meta: IBM Plex Mono.
+- Prose uses `.note-prose` tuned for docs-style long-form readability.
 
 ## Tokens
-- Global semantic tokens live in `app/globals.css`.
-- Core tokens: `--background`, `--surface`, `--surface-muted`, `--text`, `--muted`, `--border`, `--accent`.
-- Reusable surface classes:
-  - `.surface-card` for elevated cards
-  - `.surface-muted` for subtle nested panels
+- Semantic tokens live in `app/globals.css` and are mirrored for light/dark themes.
+- Core tokens:
+  - `--background`, `--background-deep`
+  - `--surface`, `--surface-elevated`, `--surface-muted`
+  - `--text`, `--text-strong`, `--muted`, `--muted-strong`
+  - `--brand`, `--brand-soft`
+  - `--border`, `--border-strong`, `--ring`
+- Utility surfaces:
+  - `.surface-card` for elevated bordered containers
+  - `.surface-muted` for nested informational panels
+
+## Shell variants
+- `landing` shell:
+  - centered content rail
+  - marketing-style hero + note-driven blocks
+  - top nav with docs/graph links and stat chips
+- `docs` shell:
+  - persistent left explorer (desktop)
+  - mobile drawer navigation hook
+  - compact utility nav/search controls
 
 ## Motion
-- Home hero entrance, sidebar tree expansion, and command dialog transitions.
-- Hover micro-interactions on chips/buttons/cards.
-- Reduced-motion support through `useReducedMotion` guards in animated client components.
+- Hero reveal and tree expansion use subtle, short-duration transitions.
+- Search dialog opens with compact scale/fade transition.
+- All animated components guard behavior with `useReducedMotion`.
 
 ## Accessibility baseline
-- Keyboard navigation for all interactive navigation/search components.
-- Visible focus rings.
-- WCAG-compliant contrast targets.
-- Command search supports keyboard shortcut (`Cmd/Ctrl + K`).
+- Keyboard-triggered search remains on `Cmd/Ctrl + K`.
+- Focus-visible ring uses tokenized color for both themes.
+- Docs navigation remains keyboard reachable on desktop and mobile drawer.
+- Contrast targets remain WCAG-friendly for text, borders, and active states.

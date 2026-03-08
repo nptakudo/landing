@@ -15,11 +15,11 @@ export function Breadcrumbs({ items }: { items: BreadcrumbItem[] }) {
           return (
             <li key={`${item.label}-${index}`} className="flex items-center gap-2">
               {isLast || !item.href ? (
-                <span className="font-medium text-[var(--text)]">{item.label}</span>
+                <span className="font-medium text-[var(--text-strong)]">{item.label}</span>
               ) : (
                 <Link
                   href={item.href}
-                  className="rounded-md px-1.5 py-0.5 hover:bg-[var(--surface-muted)] hover:text-[var(--text)]"
+                  className="rounded-md px-1.5 py-0.5 hover:bg-[var(--surface-muted)] hover:text-[var(--text-strong)]"
                 >
                   {item.label}
                 </Link>

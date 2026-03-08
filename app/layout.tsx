@@ -1,26 +1,28 @@
 import type { Metadata } from "next";
-import { Manrope, Newsreader, JetBrains_Mono } from "next/font/google";
+import { IBM_Plex_Sans, IBM_Plex_Serif, IBM_Plex_Mono } from "next/font/google";
 import { ThemeProvider } from "@/components/providers/theme-provider";
-import { TopNav } from "@/components/layout/top-nav";
-import { Sidebar } from "@/components/layout/sidebar";
+import { ShellFrame } from "@/components/layout/shell-frame";
 import { siteConfig } from "@/lib/site/config";
 import { getAllNotes, getAllTags } from "@/lib/content/load-content";
 import { buildNavigationTree } from "@/lib/content/navigation";
 import "./globals.css";
 
-const manrope = Manrope({
-  variable: "--font-manrope",
+const plexSans = IBM_Plex_Sans({
+  variable: "--font-plex-sans",
   subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
 });
 
-const newsreader = Newsreader({
-  variable: "--font-newsreader",
+const plexSerif = IBM_Plex_Serif({
+  variable: "--font-plex-serif",
   subsets: ["latin"],
+  weight: ["400", "500", "600"],
 });
 
-const mono = JetBrains_Mono({
-  variable: "--font-mono",
+const plexMono = IBM_Plex_Mono({
+  variable: "--font-plex-mono",
   subsets: ["latin"],
+  weight: ["400", "500", "600"],
 });
 
 export const metadata: Metadata = {
@@ -45,16 +47,16 @@ export default async function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${manrope.variable} ${newsreader.variable} ${mono.variable} antialiased`}
+        className={`${plexSans.variable} ${plexSerif.variable} ${plexMono.variable} antialiased`}
       >
         <ThemeProvider>
-          <div className="min-h-screen bg-[var(--background)] text-[var(--text)]">
-            <TopNav items={searchItems} stats={{ notes: notes.length, tags: tags.length }} />
-            <div className="mx-auto flex w-full max-w-[1240px] gap-6 px-4 pb-14 sm:px-6 lg:px-8">
-              <Sidebar nodes={navNodes} />
-              <main className="w-full py-8 lg:py-10">{children}</main>
-            </div>
-          </div>
+          <ShellFrame
+            navNodes={navNodes}
+            searchItems={searchItems}
+            stats={{ notes: notes.length, tags: tags.length }}
+          >
+            {children}
+          </ShellFrame>
         </ThemeProvider>
       </body>
     </html>

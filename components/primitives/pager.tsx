@@ -17,10 +17,10 @@ export function Pager({
       {prev ? (
         <Link
           href={prev.href}
-          className="surface-card rounded-xl p-4 text-sm hover:border-[var(--border-strong)]"
+          className="rounded-xl border border-[var(--border)] bg-[var(--surface)] p-4 text-sm shadow-[var(--shadow-soft)] hover:border-[var(--border-strong)]"
         >
           <p className="text-xs uppercase tracking-[0.13em] text-[var(--muted)]">Previous</p>
-          <p className="mt-1 font-semibold">{prev.label}</p>
+          <p className="mt-1 font-semibold text-[var(--text-strong)]">{prev.label}</p>
         </Link>
       ) : (
         <div />
@@ -28,10 +28,10 @@ export function Pager({
       {next ? (
         <Link
           href={next.href}
-          className="surface-card rounded-xl p-4 text-right text-sm hover:border-[var(--border-strong)]"
+          className="rounded-xl border border-[var(--border)] bg-[var(--surface)] p-4 text-right text-sm shadow-[var(--shadow-soft)] hover:border-[var(--border-strong)]"
         >
           <p className="text-xs uppercase tracking-[0.13em] text-[var(--muted)]">Next</p>
-          <p className="mt-1 font-semibold">{next.label}</p>
+          <p className="mt-1 font-semibold text-[var(--text-strong)]">{next.label}</p>
         </Link>
       ) : null}
     </div>

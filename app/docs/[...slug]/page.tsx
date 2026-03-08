@@ -61,136 +61,128 @@ export default async function NotePage({
   const next = index >= 0 && index < notes.length - 1 ? notes[index + 1] : null;
   const updatedDate = new Date(note.updatedAt).toLocaleDateString();
   const createdDate = new Date(note.createdAt).toLocaleDateString();
+  const outboundResolved = note.outboundLinks.filter((link) => link.resolvedSlug).length;
+
+  const backlinks = note.backlinks
+    .map((backlink) => notes.find((entry) => entry.slug === backlink))
+    .filter((target): target is (typeof notes)[number] => Boolean(target));
+
+  const related = note.relatedSlugs
+    .map((relatedSlug) => notes.find((entry) => entry.slug === relatedSlug))
+    .filter((target): target is (typeof notes)[number] => Boolean(target));
 
   return (
-    <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_284px]">
-      <article className="space-y-6">
-        <Breadcrumbs
-          items={[
-            { href: "/", label: "Home" },
-            { href: "/docs", label: "Docs" },
-            { label: note.title },
-          ]}
-        />
+    <section className="mx-auto max-w-[860px] space-y-5">
+      <Breadcrumbs
+        items={[
+          { href: "/", label: "Home" },
+          { href: "/docs", label: "Docs" },
+          { label: note.title },
+        ]}
+      />
 
-        <header className="surface-card space-y-4 rounded-3xl p-6 sm:p-8">
-          <p className="text-xs font-semibold uppercase tracking-[0.15em] text-[var(--muted)]">Note</p>
-          <h1 className="font-serif text-4xl tracking-tight sm:text-5xl">{note.title}</h1>
-          <p className="max-w-3xl text-[var(--muted)]">{note.summary}</p>
-          <div className="flex flex-wrap gap-2 text-xs">
-            <span className="rounded-full border border-[var(--border)] bg-[var(--surface-muted)] px-3 py-1.5">
-              {note.readingTimeMinutes} min read
-            </span>
-            <span className="rounded-full border border-[var(--border)] bg-[var(--surface-muted)] px-3 py-1.5">
-              Created {createdDate}
-            </span>
-            <span className="rounded-full border border-[var(--border)] bg-[var(--surface-muted)] px-3 py-1.5">
-              Updated {updatedDate}
-            </span>
-          </div>
-          <div className="flex flex-wrap gap-2">
+      <header className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] px-6 py-7 shadow-[var(--shadow-soft)] sm:px-8">
+        <p className="text-[0.72rem] font-semibold uppercase tracking-[0.14em] text-[var(--muted)]">Note</p>
+        <h1 className="mt-2 font-serif text-5xl tracking-[-0.02em] text-[var(--brand)]">{note.title}</h1>
+        <p className="mt-3 max-w-3xl text-[var(--muted)]">{note.summary}</p>
+        <div className="mt-4 flex flex-wrap gap-2 text-xs text-[var(--muted)]">
+          <span className="rounded-md border border-[var(--border)] bg-[var(--surface-elevated)] px-2.5 py-1.5">
+            {note.readingTimeMinutes} min read
+          </span>
+          <span className="rounded-md border border-[var(--border)] bg-[var(--surface-elevated)] px-2.5 py-1.5">
+            Created {createdDate}
+          </span>
+          <span className="rounded-md border border-[var(--border)] bg-[var(--surface-elevated)] px-2.5 py-1.5">
+            Updated {updatedDate}
+          </span>
+        </div>
+        {note.tags.length > 0 ? (
+          <div className="mt-4 flex flex-wrap gap-2">
             {note.tags.map((tag) => (
               <Link
                 key={tag}
                 href={`/tags/${tag}`}
-                className="rounded-full border border-[var(--border)] bg-[var(--surface-muted)] px-3 py-1.5 text-xs hover:border-[var(--border-strong)]"
+                className="rounded-md border border-[var(--border)] bg-[var(--surface-elevated)] px-2.5 py-1 text-xs font-medium text-[var(--muted-strong)] hover:border-[var(--border-strong)]"
               >
                 #{tag}
               </Link>
             ))}
           </div>
-        </header>
+        ) : null}
+      </header>
 
-        <div className="surface-card rounded-3xl px-5 py-6 sm:px-8 sm:py-7">
-          <div className="note-prose max-w-none">
-            <ReactMarkdown remarkPlugins={[remarkGfm]}>{note.renderedContent}</ReactMarkdown>
-          </div>
+      <TableOfContents headings={note.toc} variant="inline" />
+
+      <article className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] px-6 py-7 shadow-[var(--shadow-soft)] sm:px-8">
+        <div className="note-prose max-w-none">
+          <ReactMarkdown remarkPlugins={[remarkGfm]}>{note.renderedContent}</ReactMarkdown>
         </div>
-
-        {(note.backlinks.length > 0 || note.relatedSlugs.length > 0) && (
-          <section className="grid gap-4 sm:grid-cols-2">
-            {note.backlinks.length > 0 ? (
-              <section className="surface-card rounded-2xl p-5">
-                <h2 className="font-serif text-2xl">Backlinks</h2>
-                <ul className="mt-3 space-y-2">
-                  {note.backlinks.map((backlink) => {
-                    const target = notes.find((entry) => entry.slug === backlink);
-                    if (!target) {
-                      return null;
-                    }
-
-                    return (
-                      <li key={backlink}>
-                        <Link
-                          href={`/docs/${target.slug}`}
-                          className="block rounded-xl border border-[var(--border)] bg-[var(--surface-muted)] px-3 py-2 text-sm font-medium hover:border-[var(--border-strong)]"
-                        >
-                          {target.title}
-                        </Link>
-                      </li>
-                    );
-                  })}
-                </ul>
-              </section>
-            ) : null}
-
-            {note.relatedSlugs.length > 0 ? (
-              <section className="surface-card rounded-2xl p-5">
-                <h2 className="font-serif text-2xl">Related notes</h2>
-                <ul className="mt-3 space-y-2">
-                  {note.relatedSlugs.map((relatedSlug) => {
-                    const target = notes.find((entry) => entry.slug === relatedSlug);
-                    if (!target) {
-                      return null;
-                    }
-
-                    return (
-                      <li key={relatedSlug}>
-                        <Link
-                          href={`/docs/${target.slug}`}
-                          className="block rounded-xl border border-[var(--border)] bg-[var(--surface-muted)] px-3 py-2 text-sm font-medium hover:border-[var(--border-strong)]"
-                        >
-                          {target.title}
-                        </Link>
-                      </li>
-                    );
-                  })}
-                </ul>
-              </section>
-            ) : null}
-          </section>
-        )}
-
-        <Pager
-          prev={prev ? { href: `/docs/${prev.slug}`, label: prev.title } : undefined}
-          next={next ? { href: `/docs/${next.slug}`, label: next.title } : undefined}
-        />
       </article>
 
-      <div className="space-y-4 lg:sticky lg:top-[5.5rem] lg:max-h-[calc(100vh-6rem)] lg:overflow-y-auto">
-        <section className="surface-card rounded-2xl p-4">
-          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[var(--muted)]">
-            Note stats
-          </p>
-          <dl className="mt-3 space-y-2 text-sm">
-            <div className="flex items-center justify-between gap-3 rounded-lg border border-[var(--border)] bg-[var(--surface-muted)] px-3 py-2">
+      <section className="grid gap-3 md:grid-cols-3">
+        <article className="rounded-xl border border-[var(--border)] bg-[var(--surface)] p-4 shadow-[var(--shadow-soft)]">
+          <h2 className="text-xs font-semibold uppercase tracking-[0.13em] text-[var(--muted)]">Note stats</h2>
+          <dl className="mt-2 space-y-2 text-sm">
+            <div className="flex items-center justify-between gap-3 rounded-md border border-[var(--border)] bg-[var(--surface-elevated)] px-2.5 py-1.5">
               <dt className="text-[var(--muted)]">Reading time</dt>
-              <dd className="font-semibold">{note.readingTimeMinutes} min</dd>
+              <dd className="font-semibold text-[var(--text-strong)]">{note.readingTimeMinutes} min</dd>
             </div>
-            <div className="flex items-center justify-between gap-3 rounded-lg border border-[var(--border)] bg-[var(--surface-muted)] px-3 py-2">
+            <div className="flex items-center justify-between gap-3 rounded-md border border-[var(--border)] bg-[var(--surface-elevated)] px-2.5 py-1.5">
               <dt className="text-[var(--muted)]">Backlinks</dt>
-              <dd className="font-semibold">{note.backlinks.length}</dd>
+              <dd className="font-semibold text-[var(--text-strong)]">{note.backlinks.length}</dd>
             </div>
-            <div className="flex items-center justify-between gap-3 rounded-lg border border-[var(--border)] bg-[var(--surface-muted)] px-3 py-2">
+            <div className="flex items-center justify-between gap-3 rounded-md border border-[var(--border)] bg-[var(--surface-elevated)] px-2.5 py-1.5">
               <dt className="text-[var(--muted)]">Outgoing links</dt>
-              <dd className="font-semibold">
-                {note.outboundLinks.filter((link) => link.resolvedSlug).length}
-              </dd>
+              <dd className="font-semibold text-[var(--text-strong)]">{outboundResolved}</dd>
             </div>
           </dl>
-        </section>
-        <TableOfContents headings={note.toc} />
-      </div>
-    </div>
+        </article>
+
+        <article className="rounded-xl border border-[var(--border)] bg-[var(--surface)] p-4 shadow-[var(--shadow-soft)]">
+          <h2 className="font-serif text-2xl text-[var(--brand)]">Backlinks</h2>
+          {backlinks.length > 0 ? (
+            <ul className="mt-3 space-y-2">
+              {backlinks.map((target) => (
+                <li key={target.slug}>
+                  <Link
+                    href={`/docs/${target.slug}`}
+                    className="block rounded-md border border-[var(--border)] bg-[var(--surface-elevated)] px-3 py-1.5 text-sm font-medium text-[var(--text-strong)] hover:border-[var(--border-strong)]"
+                  >
+                    {target.title}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="mt-3 text-sm text-[var(--muted)]">No backlinks yet.</p>
+          )}
+        </article>
+
+        <article className="rounded-xl border border-[var(--border)] bg-[var(--surface)] p-4 shadow-[var(--shadow-soft)]">
+          <h2 className="font-serif text-2xl text-[var(--brand)]">Related notes</h2>
+          {related.length > 0 ? (
+            <ul className="mt-3 space-y-2">
+              {related.map((target) => (
+                <li key={target.slug}>
+                  <Link
+                    href={`/docs/${target.slug}`}
+                    className="block rounded-md border border-[var(--border)] bg-[var(--surface-elevated)] px-3 py-1.5 text-sm font-medium text-[var(--text-strong)] hover:border-[var(--border-strong)]"
+                  >
+                    {target.title}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="mt-3 text-sm text-[var(--muted)]">No related notes yet.</p>
+          )}
+        </article>
+      </section>
+
+      <Pager
+        prev={prev ? { href: `/docs/${prev.slug}`, label: prev.title } : undefined}
+        next={next ? { href: `/docs/${next.slug}`, label: next.title } : undefined}
+      />
+    </section>
   );
 }

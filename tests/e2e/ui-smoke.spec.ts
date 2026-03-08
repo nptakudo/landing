@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test";
 
 test("core routes render and are screenshotable", async ({ page }) => {
   await page.goto("/");
-  await expect(page.getByRole("heading", { name: /published obsidian notes/i })).toBeVisible();
+  await expect(page.getByRole("heading", { name: /notes for humans and ai/i })).toBeVisible();
   await page.screenshot({ path: "test-results/ui-home.png", fullPage: true });
 
   await page.goto("/docs");
