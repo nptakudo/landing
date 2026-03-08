@@ -6,7 +6,7 @@
 - Architecture baseline: Next.js App Router with static export
 - Content model: separate vault mirror into `content/notes` plus `public/obsidian-assets`
 - Generated artifacts: search index, graph JSON, RSS, sitemap, and robots
-- Preview URL: `https://landing-v2-c1se4xz5q-nptakudos-projects.vercel.app` (ready via local Vercel CLI preview deploy, protected with Vercel access control)
+- Preview URL: `https://landing-v2-c1se4xz5q-nptakudos-projects.vercel.app` (publicly reachable)
 
 ## Verification checklist
 
@@ -23,7 +23,7 @@
 - 2026-03-08: switched the deploy workflow to skip cleanly when Vercel secrets are absent so codex branches do not fail red for missing infrastructure.
 - 2026-03-08: `fs.access()` behaved inconsistently across environments, so the sync integration test now uses `fs.stat()` for deterministic existence checks.
 - 2026-03-08: content ordering is now stable across notes, navigation, search, graph edges, and feeds, with snapshot coverage guarding serialized artifact output.
-- 2026-03-08: local Vercel CLI preview deployment is ready, but the deployment currently returns `401` to unauthenticated requests because Vercel protection is enabled on the project.
+- 2026-03-08: preview deployment protection was removed from the linked Vercel project by patching `ssoProtection` to `null`, so the branch preview URL is publicly reachable without authentication.
 - 2026-03-08: RSS snapshot drift in CI was caused by fixture files falling back to filesystem mtimes; the fixture vault now pins explicit `updated` dates so artifact snapshots stay stable across environments.
 - 2026-03-08: the exported-site `start` flow initially misrouted flat pages like `/docs`; route resolution now prefers `*.html` exports before nested `index.html` fallbacks, with unit coverage for the static server resolver.
 - 2026-03-08: Vitest external snapshot files kept regenerating an obsolete key for the deterministic artifact suite on CI, so that coverage now uses an inline serialized JSON snapshot instead of a separate `.snap` file.
@@ -212,4 +212,4 @@ Preview URL:
 
 Tradeoffs:
 
-- the preview URL is currently access-protected on Vercel, so public curl checks return `401` unless authenticated
+- preview visibility is now public on the linked Vercel project; keep `ssoProtection` disabled if unauthenticated branch previews are still desired

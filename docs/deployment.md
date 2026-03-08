@@ -112,7 +112,7 @@ The worktree is already linked to the `landing-v2` Vercel project. A local CLI p
 
 - `https://landing-v2-c1se4xz5q-nptakudos-projects.vercel.app`
 
-If direct HTTP checks return `401`, that is Vercel deployment protection rather than a failed build. Use the Vercel dashboard or an authenticated browser session to inspect the deployed site.
+Preview deployment protection was disabled for the linked `landing-v2` project, so the current branch preview is publicly reachable. If `401` responses return in the future, inspect the project's Deployment Protection setting and the `ssoProtection` field on the Vercel project config.
 
 `SITE_URL` is consumed at build time through `site.config.ts`, so deployment environments can override canonical URLs without patching source files.
 
