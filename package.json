@@ -6,6 +6,8 @@
     "content:mirror": "bun run scripts/sync-vault.mts",
     "content:sync": "bun run content:mirror && bun run search:index && bun run graph:build && bun run feeds:build",
     "content:watch": "bun run scripts/watch-vault.mts",
+    "dev:prepared": "bun run content:sync && bun run dev",
+    "export:site": "bun run scripts/export-site.mts",
     "search:index": "bun run scripts/build-search-index.mts",
     "graph:build": "bun run scripts/build-graph.mts",
     "feeds:build": "bun run scripts/build-feeds.mts",

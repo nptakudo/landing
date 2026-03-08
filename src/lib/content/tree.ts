@@ -1,4 +1,14 @@
+import { compareNotesForNavigation, compareStrings } from "./order";
 import type { NavigationTreeNode, PublishedNote } from "./types";
+
+function sortTreeChildren(children: NavigationTreeNode[]) {
+  children.sort((left, right) => {
+    if (left.kind !== right.kind) {
+      return left.kind === "folder" ? -1 : 1;
+    }
+    return compareStrings(left.name, right.name);
+  });
+}
 
 function findOrCreateFolder(
   parent: NavigationTreeNode,
@@ -19,12 +29,7 @@ function findOrCreateFolder(
   };
 
   parent.children.push(folder);
-  parent.children.sort((left, right) => {
-    if (left.kind !== right.kind) {
-      return left.kind === "folder" ? -1 : 1;
-    }
-    return left.name.localeCompare(right.name);
-  });
+  sortTreeChildren(parent.children);
 
   return folder;
 }
@@ -38,7 +43,7 @@ export function buildNavigationTree(notes: PublishedNote[]): NavigationTreeNode 
     children: [],
   };
 
-  for (const note of notes.sort((left, right) => left.slug.localeCompare(right.slug))) {
+  for (const note of notes.slice().sort(compareNotesForNavigation)) {
     let current = root;
     let currentPath = "";
 
@@ -56,6 +61,7 @@ export function buildNavigationTree(notes: PublishedNote[]): NavigationTreeNode 
       kind: "note",
       children: [],
     });
+    sortTreeChildren(current.children);
   }
 
   return root;

@@ -6,7 +6,24 @@
 - Architecture baseline: Next.js App Router with static export
 - Content model: separate vault mirror into `content/notes` plus `public/obsidian-assets`
 - Generated artifacts: search index, graph JSON, RSS, sitemap, and robots
-- Preview URL: pending, Vercel secrets not configured in GitHub yet
+- Preview URL: `https://landing-v2-c1se4xz5q-nptakudos-projects.vercel.app` (ready via local Vercel CLI preview deploy, protected with Vercel access control)
+
+## Verification checklist
+
+- [x] `bun run lint`
+- [x] `bun run typecheck`
+- [x] `bun test`
+- [x] `bun run build`
+- [x] snapshot coverage for deterministic content artifacts
+- [x] `documentation.md` created and aligned with current behavior
+- [x] local preview deployment recorded in this file
+
+## Implementation notes
+
+- 2026-03-08: switched the deploy workflow to skip cleanly when Vercel secrets are absent so codex branches do not fail red for missing infrastructure.
+- 2026-03-08: `fs.access()` behaved inconsistently across environments, so the sync integration test now uses `fs.stat()` for deterministic existence checks.
+- 2026-03-08: content ordering is now stable across notes, navigation, search, graph edges, and feeds, with snapshot coverage guarding serialized artifact output.
+- 2026-03-08: local Vercel CLI preview deployment is ready, but the deployment currently returns `401` to unauthenticated requests because Vercel protection is enabled on the project.
 
 ## Milestone 1 - Mirror pipeline and published-note model
 
@@ -46,16 +63,15 @@ Verification:
 
 Preview URL:
 
-- pending
+- `https://landing-v2-c1se4xz5q-nptakudos-projects.vercel.app` (local CLI preview deploy)
 
 Tradeoffs:
 
 - callouts are normalized into styled blockquotes rather than a richer typed component set
-- `order` exists in frontmatter typing but is not consumed by navigation or pager logic
 
 ## Milestone 2 - Reader shell and static routes
 
-Status: foundation implemented, refinement still open
+Status: complete on 2026-03-08
 
 Files changed:
 
@@ -97,7 +113,7 @@ Preview URL:
 Tradeoffs:
 
 - the graph is static-layout client rendering rather than a fully explorable zoomable canvas
-- richer MDX components for callouts and attachment cards are still open work
+- the current note renderer uses normalized HTML rather than a heavier MDX component runtime
 
 ## Milestone 3 - Documentation, env scaffold, and deployment automation
 
@@ -141,7 +157,56 @@ Preview URL:
 
 Tradeoffs:
 
-- deployment is documented and automated, but the first real preview URL depends on Vercel secrets being configured
+- deployment is documented and automated, but GitHub-hosted branch deploys still need Vercel secrets configured if the workflow is expected to perform CLI deploys instead of cleanly skipping
 - the deploy workflow now skips cleanly when Vercel secrets are absent, so branch health stays readable while infra is unfinished
 - `SITE_URL` is documented for deploy parity even though the app currently reads the canonical URL from `site.config.ts`
 - milestone notes are accurate to the current worktree, including known implementation gaps outside this docs-only change
+
+## Milestone 4 - Determinism, snapshots, and operator docs
+
+Status: complete on 2026-03-08
+
+Files changed:
+
+- `documentation.md`
+- `package.json`
+- `scripts/export-site.mts`
+- `scripts/build-feeds.mts`
+- `src/lib/content/feeds.ts`
+- `src/lib/content/order.ts`
+- `src/lib/content/graph.ts`
+- `src/lib/content/index.ts`
+- `src/lib/content/notes.ts`
+- `src/lib/content/search.ts`
+- `src/lib/content/tree.ts`
+- `src/lib/site/content.ts`
+- `tests/unit/deterministic-artifacts.test.ts`
+- `tests/unit/__snapshots__/deterministic-artifacts.test.ts.snap`
+- `docs/content-model.md`
+- `docs/deployment.md`
+- `README.md`
+- `plans.md`
+
+What works:
+
+- search, graph, navigation, backlinks, attachments, and feed outputs are serialized in stable order across environments
+- snapshot coverage now guards ordering-sensitive note metadata and generated artifacts
+- the repo has a one-command prepared dev start and a dedicated static export CLI
+- operator-facing docs cover local setup, export usage, repo structure, design file format, and deployment troubleshooting
+
+Verification:
+
+- `bun run lint`
+- `bun run typecheck`
+- `bun test`
+- `bun run build`
+- `bun run export:site -- --output-dir /tmp/landing-site-export`
+- local preview deployment recorded below
+
+Preview URL:
+
+- `https://landing-v2-c1se4xz5q-nptakudos-projects.vercel.app`
+
+Tradeoffs:
+
+- the preview URL is currently access-protected on Vercel, so public curl checks return `401` unless authenticated

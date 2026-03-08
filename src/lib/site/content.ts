@@ -2,6 +2,7 @@ import { cache } from "react";
 import {
   buildContentGraph,
   buildNavigationTree,
+  compareNotesForNavigation,
   loadPublishedNotes,
   type NavigationTreeNode,
   type PublishedNote,
@@ -56,7 +57,7 @@ export const getTagArchive = cache(async () => {
 
 export const getPagerForSlug = cache(async (slug: string) => {
   const notes = await getPublishedNotes();
-  const ordered = [...notes].sort((left, right) => left.slug.localeCompare(right.slug));
+  const ordered = [...notes].sort(compareNotesForNavigation);
   const index = ordered.findIndex((note) => note.slug === slug);
 
   if (index === -1) {

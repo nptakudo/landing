@@ -99,7 +99,6 @@ Both are derived from the same published-note set as the page routes.
 ## Ordering
 
 - Navigation defaults to folder path order
+- Within the same folder, lower `order` values win before title and slug fallback
 - Docs index defaults to reverse chronological `updatedAt`, then `createdAt`, then title
-- Pager links are based on canonical slug order
-
-The `order` field exists in frontmatter typing but is not yet consumed by route ordering logic.
+- Pager links follow the same folder-local navigation ordering

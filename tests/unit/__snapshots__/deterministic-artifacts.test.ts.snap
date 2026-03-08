@@ -1,0 +1,509 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`deterministic artifacts > serializes notes and generated artifacts in stable order 1`] = `
+{
+  "graph": {
+    "edges": [
+      {
+        "kind": "link",
+        "source": "Guides/second-note",
+        "target": "Guides/start-here",
+        "weight": 1,
+      },
+      {
+        "kind": "related",
+        "source": "Guides/second-note",
+        "target": "Guides/start-here",
+        "weight": 0.5,
+      },
+      {
+        "kind": "link",
+        "source": "Guides/start-here",
+        "target": "Guides/second-note",
+        "weight": 1,
+      },
+    ],
+    "nodes": [
+      {
+        "group": "Guides",
+        "id": "Guides/second-note",
+        "slug": "Guides/second-note",
+        "title": "Second Note",
+      },
+      {
+        "group": "Guides",
+        "id": "Guides/start-here",
+        "slug": "Guides/start-here",
+        "title": "Start Here",
+      },
+    ],
+  },
+  "navigation": {
+    "children": [
+      {
+        "children": [
+          {
+            "children": [],
+            "id": "Guides/second-note",
+            "kind": "note",
+            "name": "Second Note",
+            "noteTitle": "Second Note",
+            "path": "Guides/second-note",
+            "slug": "Guides/second-note",
+          },
+          {
+            "children": [],
+            "id": "Guides/start-here",
+            "kind": "note",
+            "name": "Start Here",
+            "noteTitle": "Start Here",
+            "path": "Guides/start-here",
+            "slug": "Guides/start-here",
+          },
+        ],
+        "id": "folder:Guides",
+        "kind": "folder",
+        "name": "Guides",
+        "path": "Guides",
+      },
+    ],
+    "id": "root",
+    "kind": "folder",
+    "name": "Docs",
+    "path": "",
+  },
+  "notes": [
+    {
+      "aliases": [
+        "Follow Up",
+      ],
+      "attachments": [],
+      "backlinks": [
+        {
+          "href": "/docs/Guides/start-here",
+          "slug": "Guides/start-here",
+        },
+        {
+          "href": "/docs/Guides/start-here",
+          "slug": "Guides/start-here",
+        },
+      ],
+      "headings": [
+        {
+          "depth": 2,
+          "id": "details",
+          "text": "Details",
+        },
+      ],
+      "links": [
+        {
+          "href": "/docs/Guides/start-here",
+          "slug": "Guides/start-here",
+        },
+      ],
+      "relatedSlugs": [
+        "Guides/start-here",
+      ],
+      "slug": "Guides/second-note",
+      "tags": [
+        "deeper",
+        "docs",
+      ],
+      "title": "Second Note",
+    },
+    {
+      "aliases": [
+        "Welcome",
+      ],
+      "attachments": [
+        {
+          "publicPath": "/obsidian-assets/assets/hero.svg",
+          "type": "image",
+        },
+      ],
+      "backlinks": [
+        {
+          "href": "/docs/Guides/second-note",
+          "slug": "Guides/second-note",
+        },
+      ],
+      "headings": [
+        {
+          "depth": 2,
+          "id": "overview",
+          "text": "Overview",
+        },
+      ],
+      "links": [
+        {
+          "href": "/docs/Guides/second-note",
+          "slug": "Guides/second-note",
+        },
+        {
+          "href": "/docs/Guides/second-note#details",
+          "slug": "Guides/second-note",
+        },
+      ],
+      "relatedSlugs": [
+        "Guides/second-note",
+      ],
+      "slug": "Guides/start-here",
+      "tags": [
+        "docs",
+        "intro",
+        "launch",
+      ],
+      "title": "Start Here",
+    },
+  ],
+  "robots": "User-agent: *
+Allow: /
+
+Sitemap: https://landing.vercel.app/sitemap.xml
+",
+  "rss": "<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+<channel>
+  <title>Takudo Notes</title>
+  <link>https://landing.vercel.app</link>
+  <description>A personal documentation site generated from Obsidian notes, optimized for browsing, reading, and connected thinking.</description>
+  <language>en</language>
+  <item>
+    <title>Second Note</title>
+    <link>https://landing.vercel.app/docs/Guides/second-note</link>
+    <guid>https://landing.vercel.app/docs/Guides/second-note</guid>
+    <pubDate>Sun, 08 Mar 2026 03:02:28 GMT</pubDate>
+    <description>This note points back to [[Guides/start-here]]. ## Details More detail lives here.</description>
+  </item>
+  <item>
+    <title>Start Here</title>
+    <link>https://landing.vercel.app/docs/Guides/start-here</link>
+    <guid>https://landing.vercel.app/docs/Guides/start-here</guid>
+    <pubDate>Mon, 02 Mar 2026 00:00:00 GMT</pubDate>
+    <description>Welcome to the vault. Read [[second-note|the follow-up note]] after this one. ![[assets/hero.svg]] ## Overview This note links to [[second-note#Details]] and uses inline tags like…</description>
+  </item>
+</channel>
+</rss>
+",
+  "searchIndex": [
+    {
+      "aliases": [
+        "Follow Up",
+      ],
+      "body": "This note points back to [[Guides/start-here]].
+
+## Details
+
+More detail lives here.",
+      "description": undefined,
+      "excerpt": "This note points back to [[Guides/start-here]]. ## Details More detail lives here.",
+      "headings": [
+        "Details",
+      ],
+      "slug": "Guides/second-note",
+      "tags": [
+        "deeper",
+        "docs",
+      ],
+      "title": "Second Note",
+    },
+    {
+      "aliases": [
+        "Welcome",
+      ],
+      "body": "Welcome to the vault. Read [[second-note|the follow-up note]] after this one.
+
+![[assets/hero.svg]]
+
+## Overview
+
+This note links to [[second-note#Details]] and uses inline tags like #launch.",
+      "description": undefined,
+      "excerpt": "Welcome to the vault. Read [[second-note|the follow-up note]] after this one. ![[assets/hero.svg]] ## Overview This note links to [[second-note#Details]] and uses inline tags like…",
+      "headings": [
+        "Overview",
+      ],
+      "slug": "Guides/start-here",
+      "tags": [
+        "docs",
+        "intro",
+        "launch",
+      ],
+      "title": "Start Here",
+    },
+  ],
+  "sitemap": "<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://landing.vercel.app/</loc></url>
+  <url><loc>https://landing.vercel.app/docs</loc></url>
+  <url><loc>https://landing.vercel.app/graph</loc></url>
+  <url><loc>https://landing.vercel.app/tags</loc></url>
+  <url><loc>https://landing.vercel.app/docs/Guides/second-note</loc></url>
+  <url><loc>https://landing.vercel.app/docs/Guides/start-here</loc></url>
+  <url><loc>https://landing.vercel.app/tags/deeper</loc></url>
+  <url><loc>https://landing.vercel.app/tags/docs</loc></url>
+  <url><loc>https://landing.vercel.app/tags/intro</loc></url>
+  <url><loc>https://landing.vercel.app/tags/launch</loc></url>
+</urlset>
+",
+}
+`;
+
+exports[`deterministic artifacts serializes notes and generated artifacts in stable order 1`] = `
+{
+  "graph": {
+    "edges": [
+      {
+        "kind": "link",
+        "source": "Guides/second-note",
+        "target": "Guides/start-here",
+        "weight": 1,
+      },
+      {
+        "kind": "related",
+        "source": "Guides/second-note",
+        "target": "Guides/start-here",
+        "weight": 0.5,
+      },
+      {
+        "kind": "link",
+        "source": "Guides/start-here",
+        "target": "Guides/second-note",
+        "weight": 1,
+      },
+    ],
+    "nodes": [
+      {
+        "group": "Guides",
+        "id": "Guides/second-note",
+        "slug": "Guides/second-note",
+        "title": "Second Note",
+      },
+      {
+        "group": "Guides",
+        "id": "Guides/start-here",
+        "slug": "Guides/start-here",
+        "title": "Start Here",
+      },
+    ],
+  },
+  "navigation": {
+    "children": [
+      {
+        "children": [
+          {
+            "children": [],
+            "id": "Guides/second-note",
+            "kind": "note",
+            "name": "Second Note",
+            "noteTitle": "Second Note",
+            "path": "Guides/second-note",
+            "slug": "Guides/second-note",
+          },
+          {
+            "children": [],
+            "id": "Guides/start-here",
+            "kind": "note",
+            "name": "Start Here",
+            "noteTitle": "Start Here",
+            "path": "Guides/start-here",
+            "slug": "Guides/start-here",
+          },
+        ],
+        "id": "folder:Guides",
+        "kind": "folder",
+        "name": "Guides",
+        "path": "Guides",
+      },
+    ],
+    "id": "root",
+    "kind": "folder",
+    "name": "Docs",
+    "path": "",
+  },
+  "notes": [
+    {
+      "aliases": [
+        "Follow Up",
+      ],
+      "attachments": [],
+      "backlinks": [
+        {
+          "href": "/docs/Guides/start-here",
+          "slug": "Guides/start-here",
+        },
+        {
+          "href": "/docs/Guides/start-here",
+          "slug": "Guides/start-here",
+        },
+      ],
+      "headings": [
+        {
+          "depth": 2,
+          "id": "details",
+          "text": "Details",
+        },
+      ],
+      "links": [
+        {
+          "href": "/docs/Guides/start-here",
+          "slug": "Guides/start-here",
+        },
+      ],
+      "relatedSlugs": [
+        "Guides/start-here",
+      ],
+      "slug": "Guides/second-note",
+      "tags": [
+        "deeper",
+        "docs",
+      ],
+      "title": "Second Note",
+    },
+    {
+      "aliases": [
+        "Welcome",
+      ],
+      "attachments": [
+        {
+          "publicPath": "/obsidian-assets/assets/hero.svg",
+          "type": "image",
+        },
+      ],
+      "backlinks": [
+        {
+          "href": "/docs/Guides/second-note",
+          "slug": "Guides/second-note",
+        },
+      ],
+      "headings": [
+        {
+          "depth": 2,
+          "id": "overview",
+          "text": "Overview",
+        },
+      ],
+      "links": [
+        {
+          "href": "/docs/Guides/second-note",
+          "slug": "Guides/second-note",
+        },
+        {
+          "href": "/docs/Guides/second-note#details",
+          "slug": "Guides/second-note",
+        },
+      ],
+      "relatedSlugs": [
+        "Guides/second-note",
+      ],
+      "slug": "Guides/start-here",
+      "tags": [
+        "docs",
+        "intro",
+        "launch",
+      ],
+      "title": "Start Here",
+    },
+  ],
+  "robots": 
+"User-agent: *
+Allow: /
+
+Sitemap: https://landing.vercel.app/sitemap.xml
+"
+,
+  "rss": 
+"<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+<channel>
+  <title>Takudo Notes</title>
+  <link>https://landing.vercel.app</link>
+  <description>A personal documentation site generated from Obsidian notes, optimized for browsing, reading, and connected thinking.</description>
+  <language>en</language>
+  <item>
+    <title>Second Note</title>
+    <link>https://landing.vercel.app/docs/Guides/second-note</link>
+    <guid>https://landing.vercel.app/docs/Guides/second-note</guid>
+    <pubDate>Sun, 08 Mar 2026 03:02:28 GMT</pubDate>
+    <description>This note points back to [[Guides/start-here]]. ## Details More detail lives here.</description>
+  </item>
+  <item>
+    <title>Start Here</title>
+    <link>https://landing.vercel.app/docs/Guides/start-here</link>
+    <guid>https://landing.vercel.app/docs/Guides/start-here</guid>
+    <pubDate>Mon, 02 Mar 2026 00:00:00 GMT</pubDate>
+    <description>Welcome to the vault. Read [[second-note|the follow-up note]] after this one. ![[assets/hero.svg]] ## Overview This note links to [[second-note#Details]] and uses inline tags like…</description>
+  </item>
+</channel>
+</rss>
+"
+,
+  "searchIndex": [
+    {
+      "aliases": [
+        "Follow Up",
+      ],
+      "body": 
+"This note points back to [[Guides/start-here]].
+
+## Details
+
+More detail lives here."
+,
+      "description": undefined,
+      "excerpt": "This note points back to [[Guides/start-here]]. ## Details More detail lives here.",
+      "headings": [
+        "Details",
+      ],
+      "slug": "Guides/second-note",
+      "tags": [
+        "deeper",
+        "docs",
+      ],
+      "title": "Second Note",
+    },
+    {
+      "aliases": [
+        "Welcome",
+      ],
+      "body": 
+"Welcome to the vault. Read [[second-note|the follow-up note]] after this one.
+
+![[assets/hero.svg]]
+
+## Overview
+
+This note links to [[second-note#Details]] and uses inline tags like #launch."
+,
+      "description": undefined,
+      "excerpt": "Welcome to the vault. Read [[second-note|the follow-up note]] after this one. ![[assets/hero.svg]] ## Overview This note links to [[second-note#Details]] and uses inline tags like…",
+      "headings": [
+        "Overview",
+      ],
+      "slug": "Guides/start-here",
+      "tags": [
+        "docs",
+        "intro",
+        "launch",
+      ],
+      "title": "Start Here",
+    },
+  ],
+  "sitemap": 
+"<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://landing.vercel.app/</loc></url>
+  <url><loc>https://landing.vercel.app/docs</loc></url>
+  <url><loc>https://landing.vercel.app/graph</loc></url>
+  <url><loc>https://landing.vercel.app/tags</loc></url>
+  <url><loc>https://landing.vercel.app/docs/Guides/second-note</loc></url>
+  <url><loc>https://landing.vercel.app/docs/Guides/start-here</loc></url>
+  <url><loc>https://landing.vercel.app/tags/deeper</loc></url>
+  <url><loc>https://landing.vercel.app/tags/docs</loc></url>
+  <url><loc>https://landing.vercel.app/tags/intro</loc></url>
+  <url><loc>https://landing.vercel.app/tags/launch</loc></url>
+</urlset>
+"
+,
+}
+`;

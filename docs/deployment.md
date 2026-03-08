@@ -100,6 +100,18 @@ For this milestone:
 3. let `deploy-vercel.yml` create a preview deployment
 4. record the preview URL in `plans.md`
 
+## Local export
+
+Use `bun run export:site` for a repo-local static export flow. It mirrors content, builds the app, and leaves the static output in `out/`, with optional copying via `--output-dir`.
+
+## Local Vercel preview
+
+The worktree is already linked to the `landing-v2` Vercel project. A local CLI preview deploy was verified on 2026-03-08 at:
+
+- `https://landing-v2-c1se4xz5q-nptakudos-projects.vercel.app`
+
+If direct HTTP checks return `401`, that is Vercel deployment protection rather than a failed build. Use the Vercel dashboard or an authenticated browser session to inspect the deployed site.
+
 ## Tradeoffs
 
 - Vercel gives the cleanest preview ergonomics, but the repo remains build-portable because output is static

@@ -25,18 +25,18 @@ bun install
 cp .env.example .env.local
 ```
 
-3. Mirror published notes and assets.
+3. Start the prepared local dev loop.
+
+```bash
+bun run dev:prepared
+```
+
+This command mirrors content, rebuilds generated artifacts, and starts Next.js on localhost.
+
+4. If you want to refresh content without starting the app:
 
 ```bash
 bun run content:sync
-```
-
-This command now mirrors content and refreshes the generated search, graph, RSS, sitemap, and robots artifacts used by localhost and static builds.
-
-4. Start the app.
-
-```bash
-bun run dev
 ```
 
 5. Optional: keep the mirror updated while editing in Obsidian.
@@ -63,6 +63,7 @@ bun run content:watch
 bun run search:index
 bun run graph:build
 bun run feeds:build
+bun run export:site
 bun run lint
 bun run typecheck
 bun run test
@@ -75,6 +76,7 @@ bun run build
 - `codex/**` pushes run CI and create Vercel preview deployments.
 - `main` pushes run CI and deploy production.
 - `deploy-vercel.yml` can also sync a separate private vault repo before building when `VAULT_REPO` is configured.
+- Local Vercel CLI preview is linked and verified for this worktree; the current preview URL is `https://landing-v2-c1se4xz5q-nptakudos-projects.vercel.app`.
 
 ## Environment
 

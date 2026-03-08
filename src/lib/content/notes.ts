@@ -13,6 +13,7 @@ import {
 import { isPublished, parseFrontmatter } from "../obsidian/frontmatter";
 import { ensureAbsolute, folderSegmentsFromSlug, relativeSlug } from "../obsidian/paths";
 import { basenameWithoutExt, normalizeWikiPath, parseWikiLinks } from "../obsidian/wiki-links";
+import { compareNotesBySlug, compareStrings } from "./order";
 import { computeRelatedSlugs } from "./related";
 import type {
   AttachmentRef,
@@ -61,7 +62,7 @@ function collectLookup(notes: NoteParseResult[]): NoteLookup {
   const byBasename = new Map<string, NoteParseResult[]>();
   const byAlias = new Map<string, NoteParseResult[]>();
 
-  for (const note of notes) {
+  for (const note of notes.slice().sort((left, right) => compareStrings(left.slug, right.slug))) {
     bySlug.set(note.slug, note);
 
     const basename = basenameWithoutExt(note.slug);
@@ -86,10 +87,10 @@ async function parseNote(absolutePath: string, rootDir: string): Promise<NotePar
   }
 
   const slug = relativeSlug(relativePath);
-  const tags = [...new Set([...(Array.isArray(data.tags) ? data.tags : []), ...extractTags(content)])].map(
-    normalizeTag,
-  );
-  const aliases = Array.isArray(data.aliases) ? data.aliases : [];
+  const tags = [...new Set([...(Array.isArray(data.tags) ? data.tags : []), ...extractTags(content)])]
+    .map(normalizeTag)
+    .sort(compareStrings);
+  const aliases = (Array.isArray(data.aliases) ? data.aliases : []).slice().sort(compareStrings);
   const rawHeadings = extractHeadings(content);
   const title = data.title?.trim() || rawHeadings[0]?.text || basenameWithoutExt(relativePath);
   const bodyContent = stripLeadingTitleHeading(content, title);
@@ -186,6 +187,7 @@ async function collectAssetLookup(rootDir: string): Promise<AssetLookup> {
     onlyFiles: true,
     ignore: ["**/.git/**", "**/.obsidian/**", NOTE_GLOB],
   });
+  files.sort(compareStrings);
 
   const byRelativePath = new Map<string, string>();
   const byBasename = new Map<string, string[]>();
@@ -260,6 +262,10 @@ function buildBacklinks(notes: PublishedNote[]): Map<string, ResolvedWikiLink[]>
     }
   }
 
+  for (const [slug, entries] of backlinks.entries()) {
+    backlinks.set(slug, entries.slice().sort((left, right) => compareStrings(left.slug, right.slug)));
+  }
+
   return backlinks;
 }
 
@@ -271,6 +277,7 @@ export async function loadPublishedNotes(rootDir: string): Promise<PublishedNote
     onlyFiles: true,
     ignore: NOTE_IGNORE,
   });
+  absoluteFiles.sort(compareStrings);
 
   const parsed = (await Promise.all(absoluteFiles.map((absolutePath) => parseNote(absolutePath, rootDir)))).filter(
     Boolean,
@@ -279,7 +286,7 @@ export async function loadPublishedNotes(rootDir: string): Promise<PublishedNote
   const assets = await collectAssetLookup(rootDir);
   const warnings: ContentWarning[] = [];
 
-  const notes = parsed.map((note) => {
+  const notes = parsed.slice().sort((left, right) => compareStrings(left.slug, right.slug)).map((note) => {
     const links = note.links
       .filter((link) => !link.isEmbed)
       .map((link) => {
@@ -328,7 +335,7 @@ export async function loadPublishedNotes(rootDir: string): Promise<PublishedNote
       sourcePublishedAt: note.sourcePublishedAt,
       links,
       backlinks: [],
-      attachments,
+      attachments: attachments.slice().sort((left, right) => compareStrings(left.publicPath, right.publicPath)),
       relatedSlugs: [],
       folderSegments: folderSegmentsFromSlug(note.slug),
     } satisfies PublishedNote;
@@ -343,14 +350,14 @@ export async function loadPublishedNotes(rootDir: string): Promise<PublishedNote
   const related = computeRelatedSlugs(notes);
 
   return Promise.all(
-    notes.map(async (note) => ({
+    notes.slice().sort(compareNotesBySlug).map(async (note) => ({
       ...note,
       html: await renderObsidianMarkdownToHtml(note.content, {
         links: note.links,
         attachments: note.attachments,
       }),
       backlinks: backlinks.get(note.slug) ?? [],
-      relatedSlugs: related.get(note.slug) ?? [],
+      relatedSlugs: [...(related.get(note.slug) ?? [])].sort(compareStrings),
     })),
   );
 }

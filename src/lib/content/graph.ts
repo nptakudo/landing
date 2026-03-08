@@ -1,10 +1,11 @@
+import { compareNotesBySlug, compareStrings } from "./order";
 import type { GraphEdge, GraphNode, PublishedNote } from "./types";
 
 export function buildContentGraph(notes: PublishedNote[]): {
   nodes: GraphNode[];
   edges: GraphEdge[];
 } {
-  const nodes = notes.map((note) => ({
+  const nodes = notes.slice().sort(compareNotesBySlug).map((note) => ({
     id: note.slug,
     slug: note.slug,
     title: note.title,
@@ -42,6 +43,14 @@ export function buildContentGraph(notes: PublishedNote[]): {
       }
     }
   }
+
+  edges.sort((left, right) => {
+    return (
+      compareStrings(left.source, right.source) ||
+      compareStrings(left.target, right.target) ||
+      compareStrings(left.kind, right.kind)
+    );
+  });
 
   return { nodes, edges };
 }
