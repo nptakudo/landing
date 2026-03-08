@@ -44,26 +44,30 @@ export function OutlineNav({ items }: { items: TocEntry[] }) {
     : items[0]?.id;
 
   return (
-    <nav aria-label="Outline" className="space-y-3">
-      <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--muted)]">
-        Outline
+    <nav aria-label="Outline" className="space-y-4">
+      <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-[var(--muted)]">
+        On this page
       </p>
-      <div className="space-y-1">
-        {items.map((item) => (
-          <a
-            key={item.id}
-            href={`#${item.id}`}
-            className={[
-              "block rounded-2xl px-3 py-2 text-sm transition",
-              item.depth >= 3 ? "ml-4" : "",
-              activeId === item.id
-                ? "bg-[var(--surface-elevated)] text-[var(--foreground)] shadow-[var(--shadow-soft)]"
-                : "text-[var(--muted)] hover:bg-[var(--surface-elevated)] hover:text-[var(--foreground)]",
-            ].join(" ")}
-          >
-            {item.text}
-          </a>
-        ))}
+      <div className="flex flex-col gap-px border-l border-[var(--border-strong)] ml-1">
+        {items.map((item) => {
+          const isActive = activeId === item.id;
+          const isDeep = item.depth >= 3;
+          return (
+            <a
+              key={item.id}
+              href={`#${item.id}`}
+              className={[
+                "block rounded-r-lg py-1.5 text-[13px] transition-all duration-[--motion-fast] -ml-px",
+                isDeep ? "pl-[22px]" : "pl-4",
+                isActive
+                  ? `border-l-2 border-[var(--accent)] bg-[var(--accent-surface)] text-[var(--foreground)] font-medium ${isDeep ? 'pl-[calc(22px-1px)]' : 'pl-[calc(16px-1px)]'}`
+                  : "border-l-2 border-transparent text-[var(--muted)] hover:bg-[var(--surface-elevated)] hover:text-[var(--foreground)]",
+              ].join(" ")}
+            >
+              {item.text}
+            </a>
+          );
+        })}
       </div>
     </nav>
   );

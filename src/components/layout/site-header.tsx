@@ -1,32 +1,54 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { SearchDialog } from "@/components/search/search-dialog";
 import { ThemeToggle } from "@/components/primitives/theme-toggle";
 import { siteConfig } from "@/site.config";
+import { cn } from "@/lib/utils/cn";
+
+function NavItem({ href, children }: { href: string; children: React.ReactNode }) {
+  const pathname = usePathname();
+  const isActive = pathname?.startsWith(href);
+
+  return (
+    <Link
+      href={href}
+      className={cn(
+        "relative rounded-full px-4 py-1.5 text-sm font-medium transition-all duration-[--motion-fast]",
+        isActive
+          ? "bg-[var(--accent-surface)] text-[var(--accent)]"
+          : "text-[var(--muted)] hover:bg-[var(--surface-elevated)] hover:text-[var(--foreground)]"
+      )}
+    >
+      {children}
+    </Link>
+  );
+}
 
 export function SiteHeader() {
   return (
-    <header className="sticky top-0 z-50 border-b border-[var(--border-soft)] bg-[color:var(--background)/0.82] backdrop-blur-xl">
+    <header className="sticky top-0 z-50 border-b border-[var(--border-soft)] bg-[color:var(--surface)]/80 backdrop-blur-xl">
       <div className="mx-auto flex h-18 w-full max-w-[1500px] items-center justify-between gap-6 px-5 sm:px-8">
-        <div className="flex items-center gap-6">
-          <Link href="/" className="space-y-0.5">
-            <span className="block text-xs font-semibold uppercase tracking-[0.24em] text-[var(--muted)]">
-              {siteConfig.author}
-            </span>
-            <span className="block font-serif text-lg tracking-tight text-[var(--foreground)]">
-              {siteConfig.title}
-            </span>
+        <div className="flex items-center gap-8">
+          <Link href="/" className="group flex items-center gap-3">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[var(--foreground)] font-serif text-lg font-bold text-[var(--background)] transition-colors duration-[--motion-fast] group-hover:bg-[var(--accent)]">
+              {siteConfig.author.charAt(0)}
+            </div>
+            <div className="space-y-0.5 hidden sm:block">
+              <span className="block text-[10px] font-bold uppercase tracking-[0.24em] text-[var(--muted)]">
+                {siteConfig.author}
+              </span>
+              <span className="block font-serif text-lg leading-none tracking-tight text-[var(--foreground)]">
+                {siteConfig.title}
+              </span>
+            </div>
           </Link>
-          <div className="hidden items-center gap-4 text-sm text-[var(--muted)] md:flex">
-            <Link href="/docs" className="transition hover:text-[var(--foreground)]">
-              Docs
-            </Link>
-            <Link href="/graph" className="transition hover:text-[var(--foreground)]">
-              Graph
-            </Link>
-            <Link href="/tags" className="transition hover:text-[var(--foreground)]">
-              Tags
-            </Link>
-          </div>
+          <nav className="hidden items-center gap-1 md:flex">
+            <NavItem href="/docs">Docs</NavItem>
+            <NavItem href="/graph">Graph</NavItem>
+            <NavItem href="/tags">Tags</NavItem>
+          </nav>
         </div>
         <div className="flex items-center gap-3">
           <div className="md:hidden">

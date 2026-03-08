@@ -6,6 +6,7 @@ import MiniSearch, { type SearchResult } from "minisearch";
 import { motion } from "motion/react";
 import { Search, ArrowUpRight } from "lucide-react";
 import type { SearchIndexEntry } from "@/lib/content";
+import { KbdBadge } from "@/components/primitives/kbd-badge";
 
 type SearchHit = SearchIndexEntry & {
   id: string;
@@ -118,11 +119,7 @@ export function SearchDialog({ compact = false }: { compact?: boolean }) {
       <Dialog.Trigger className="inline-flex h-11 items-center gap-3 rounded-full border border-[var(--border-strong)] bg-[var(--surface-elevated)] px-4 text-sm text-[var(--muted)] transition hover:border-[var(--foreground)] hover:text-[var(--foreground)]">
         <Search className="h-4 w-4" />
         <span>{compact ? "Search" : "Search notes"}</span>
-        {!compact ? (
-          <span className="rounded-full border border-[var(--border-soft)] px-2 py-0.5 text-xs">
-            ⌘K
-          </span>
-        ) : null}
+        {!compact ? <KbdBadge>⌘K</KbdBadge> : null}
       </Dialog.Trigger>
       <Dialog.Portal>
         <Dialog.Backdrop className="fixed inset-0 z-50 bg-[rgba(9,13,20,0.45)] backdrop-blur-md" />
@@ -188,6 +185,6 @@ export function SearchDialog({ compact = false }: { compact?: boolean }) {
           </motion.div>
         </Dialog.Popup>
       </Dialog.Portal>
-    </Dialog.Root>
+    </Dialog.Root >
   );
 }

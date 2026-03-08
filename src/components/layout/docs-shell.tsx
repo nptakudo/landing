@@ -15,8 +15,8 @@ export function DocsShell({
   activeHref?: string;
 }) {
   return (
-    <div className="mx-auto grid w-full max-w-[1500px] gap-8 px-5 pb-16 pt-8 sm:px-8 xl:grid-cols-[292px_minmax(0,1fr)_244px]">
-      <div className="col-span-full flex flex-wrap gap-3 xl:hidden">
+    <div className="mx-auto grid w-full max-w-[1500px] gap-8 px-5 pb-16 sm:px-8 xl:grid-cols-[280px_minmax(0,1fr)_260px]">
+      <div className="col-span-full flex flex-wrap gap-3 pt-8 xl:hidden">
         <MobileRailDialog title="Files" side="left">
           <SidebarTree tree={navigation} activeHref={activeHref} />
         </MobileRailDialog>
@@ -26,14 +26,14 @@ export function DocsShell({
           </MobileRailDialog>
         ) : null}
       </div>
-      <aside className="hidden xl:block">
-        <div className="sticky top-28 rounded-[2rem] border border-[var(--border-soft)] bg-[var(--surface)] p-5 shadow-[var(--shadow-soft)]">
+      <aside className="hidden xl:block border-r border-[var(--border-soft)] pr-6">
+        <div className="sticky top-[4.5rem] h-[calc(100vh-4.5rem)] overflow-y-auto py-8 hide-scrollbar">
           <SidebarTree tree={navigation} activeHref={activeHref} />
         </div>
       </aside>
-      <div className="min-w-0">{children}</div>
-      <aside className="hidden xl:block">
-        <div className="sticky top-28 rounded-[2rem] border border-[var(--border-soft)] bg-[var(--surface)] p-5 shadow-[var(--shadow-soft)]">
+      <div className="min-w-0 pt-8 max-w-[800px] mx-auto w-full">{children}</div>
+      <aside className="hidden xl:block border-l border-[var(--border-soft)] pl-6">
+        <div className="sticky top-[4.5rem] h-[calc(100vh-4.5rem)] overflow-y-auto py-8 hide-scrollbar">
           {outline ? (
             <OutlineNav items={outline} />
           ) : (
