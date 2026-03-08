@@ -245,6 +245,7 @@ Every change needs validation proportional to its scope.
 Run:
 
 ```bash
-pnpm lint
-pnpm typecheck
-pnpm build
+bun run lint
+bun run typecheck
+bun run build
+bun test

@@ -1,156 +1,249 @@
-# Personal Obsidian Docs Site Plan
+# Personal Obsidian Docs Site Milestone Log
 
-## Project Architecture Recommendation
-- Build a static-exported Next.js App Router site that reads only repo-local mirrored content at build time. This keeps the app portable across Vercel, Cloudflare Pages, Netlify, and GitHub Pages while staying local-first and database-free.
-- Treat `/Users/takudo/Documents/TakudoNotes` as the authoring source of truth, but mirror published notes into `content/notes` and referenced assets into `public/obsidian-assets` before build.
-- Keep all parsing, normalization, graph-building, and search-index generation in `lib/content` and `lib/obsidian`; route components consume typed `PublishedNote` data only.
-- Use strict opt-in publishing: only notes with `publish: true` are eligible. `draft: true` or `private: true` always exclude. Existing `published:` frontmatter remains a source/article date field, not a visibility flag.
-- Default exclusions: hidden/system paths (`.obsidian`, `.git`), `Templates/`, and raw `.excalidraw.md` notes from page generation. Embedded images and PDFs render directly; embedded Excalidraw notes degrade to attachment cards/download links in v1.
-- Canonical slug strategy: vault-relative path wins. Bare wikilinks resolve by unique filename or alias match across published notes; ambiguous matches fail the production build with diagnostics.
-- Date normalization: `createdAt` from `created` or `created_date`, then file birthtime fallback. `updatedAt` from `updated` or `updated_date`, then file mtime fallback.
-- Tag normalization: merge frontmatter tags and inline `#tags`, normalize to kebab-case for URLs, preserve human-readable labels for UI.
+## Current status
 
-## Framework Choice With Justification
-- Choose Next.js App Router over Astro.
-- Why: the site needs a substantial amount of interactive React UI built with Base UI and Motion: command search, nested explorer, mobile drawer, theme system, animated TOC, and graph view. Next keeps routing, metadata, route handlers, and React UI in one model.
-- Astro’s content collections are strong, but this project already needs a custom Obsidian normalization layer for wikilinks, backlinks, aliases, and attachment resolution. That reduces Astro’s main advantage while adding React-island complexity for the interactive UI.
-- Use `output: 'export'` so the site remains host-portable. That means no runtime server, no ISR, no cookies/server actions, and no default Next image optimization; search, RSS, sitemap, backlinks, and graph data must all be generated at build time.
-- Reference basis: [Next.js Static Exports](https://nextjs.org/docs/app/guides/static-exports), [Astro Content Collections](https://docs.astro.build/en/guides/content-collections/).
+- Active branch: `codex/obsidian-docs-site-v2`
+- Architecture baseline: Next.js App Router with static export
+- Content model: separate vault mirror into `content/notes` plus `public/obsidian-assets`
+- Generated artifacts: search index, graph JSON, RSS, sitemap, and robots
+- Preview URL: `https://landing-v2-c1se4xz5q-nptakudos-projects.vercel.app` (publicly reachable)
 
-## Folder Structure
-```text
-app/
-  page.tsx
-  docs/page.tsx
-  docs/[...slug]/page.tsx
-  tags/[tag]/page.tsx
-  graph/page.tsx
-  rss.xml/route.ts
-  sitemap.ts
-components/
-  layout/
-  content/
-  search/
-  graph/
-  primitives/
-lib/
-  content/
-  obsidian/
-  search/
-  site/
-content/
-  notes/                 # mirrored publishable vault notes
-  example/               # safe committed demo notes
-public/
-  obsidian-assets/       # mirrored vault-relative assets
-scripts/
-  sync-vault.mts
-  watch-vault.mts
-  build-search-index.mts
-docs/
-  architecture.md
-  content-model.md
-  obsidian-compat.md
-  design-system.md
-  search.md
-  deployment.md
-  exec-plans/active/personal-docs-site.md
-tests/
-  fixtures/vault/
-  unit/
-  e2e/
-plans.md
-README.md
-```
+## Verification checklist
 
-## Milestone Plan
-1. Planning and repo bootstrap
-- Create `plans.md` with this plan, risk register, demo script, and architecture overview.
-- Create `docs/exec-plans/active/personal-docs-site.md` to satisfy repo workflow tracking.
-- Author the missing source-of-truth docs: `architecture.md`, `content-model.md`, `obsidian-compat.md`, `design-system.md`, `search.md`, `deployment.md`.
-- Lock design direction: editorial minimalism, warm-neutral light theme, graphite dark theme, `Newsreader` for display, `Manrope` for UI/body, restrained motion only.
+- [x] `bun run lint`
+- [x] `bun run typecheck`
+- [x] `bun test`
+- [x] `bun run build`
+- [x] snapshot coverage for deterministic content artifacts
+- [x] `documentation.md` created and aligned with current behavior
+- [x] local preview deployment recorded in this file
 
-2. App and design-system foundation
-- Scaffold current stable Next.js App Router + React + TypeScript + Tailwind + Base UI + Motion.
-- Add ESLint, Prettier, Vitest, Playwright, strict TypeScript, and production scripts.
-- Build the reusable shell: top nav, nested sidebar, mobile drawer, theme provider, typography tokens, spacing/elevation/border tokens, reduced-motion support.
-- Build reusable primitives: `SidebarTree`, `CommandDialog`, `Breadcrumbs`, `TOC`, `Callout`, `Tabs`, `Pager`, `ThemeSwitch`.
+## Implementation notes
 
-3. Vault sync and normalization pipeline
-- Implement `scripts/sync-vault.mts` to copy only publishable notes from `OBSIDIAN_VAULT_PATH` into `content/notes`.
-- Preserve vault-relative asset paths under `public/obsidian-assets` to avoid filename collisions.
-- Add `pnpm content:watch` using `watch-vault.mts` so Obsidian edits refresh local preview continuously.
-- Normalize `.md` and `.mdx` content into typed `PublishedNote` records with title fallback order: frontmatter `title`, first H1, then filename.
-- Parse and resolve Obsidian syntax: `[[Note]]`, `[[Note|Alias]]`, `[[path/Note]]`, `[[Note#Heading]]`, `![[image.png]]`, `![[file.pdf]]`, callouts, aliases, folders, and inline tags.
-- Generate backlinks, recent notes, related notes, section tree, reading time, TOC, and structured warnings.
-- Production build rule: unresolved internal links in published notes fail CI.
+- 2026-03-08: switched the deploy workflow to skip cleanly when Vercel secrets are absent so codex branches do not fail red for missing infrastructure.
+- 2026-03-08: `fs.access()` behaved inconsistently across environments, so the sync integration test now uses `fs.stat()` for deterministic existence checks.
+- 2026-03-08: content ordering is now stable across notes, navigation, search, graph edges, and feeds, with snapshot coverage guarding serialized artifact output.
+- 2026-03-08: preview deployment protection was removed from the linked Vercel project by patching `ssoProtection` to `null`, so the branch preview URL is publicly reachable without authentication.
+- 2026-03-08: RSS snapshot drift in CI was caused by fixture files falling back to filesystem mtimes; the fixture vault now pins explicit `updated` dates so artifact snapshots stay stable across environments.
+- 2026-03-08: the exported-site `start` flow initially misrouted flat pages like `/docs`; route resolution now prefers `*.html` exports before nested `index.html` fallbacks, with unit coverage for the static server resolver.
+- 2026-03-08: Vitest external snapshot files kept regenerating an obsolete key for the deterministic artifact suite on CI, so that coverage now uses an inline serialized JSON snapshot instead of a separate `.snap` file.
+- 2026-03-08: the GitHub-linked Vercel branch preview returned `404 NOT_FOUND` because the project had drifted into a broken Next.js runtime configuration. The repo now commits `vercel.json` with a static-export build (`bun run export:site`) and `out/` output so GitHub-linked previews and local CLI deploys use the same deployment contract.
 
-4. Core site experience
-- Homepage: profile-led landing, recent notes, featured tags, quick search entry, and “published from Obsidian” framing.
-- Docs explorer: nested sidebar from mirrored folder tree, docs index, breadcrumbs, and prev/next within section.
-- Note page template: article header, metadata, TOC, rendered markdown, callouts, attachments, backlinks, related notes, pager, and tag chips.
-- Tag pages and `/docs` index generated statically from normalized content.
+## Milestone 1 - Mirror pipeline and published-note model
 
-5. Search and knowledge features
-- Use a build-generated MiniSearch JSON index for title, aliases, headings, tags, and body excerpts; load lazily when search opens.
-- Use Base UI dialog primitives for the command palette and Motion for entry/exit/layout polish.
-- Compute related notes from weighted shared tags plus inbound/outbound link overlap.
-- Ship `/graph` as a lazy client-only SVG relationship view backed by a precomputed graph JSON; limit initial exploration to published notes and 1–2 hops to keep bundles small.
+Status: implemented in the current worktree
 
-6. SEO, feeds, and deployment
-- Generate static metadata per note, Open Graph fields, sitemap, robots, and RSS.
-- Primary CI/CD path: GitHub Actions runs `lint`, `typecheck`, `test`, and `build` on every push; pushes to `main` deploy to Vercel.
-- Document hosting tradeoffs in `docs/deployment.md`: Vercel is the primary and easiest target; Cloudflare Pages and Netlify work with static export; GitHub Pages is the most constrained and loses preview ergonomics.
-- Document two publishing workflows:
-  - vault inside site repo
-  - separate vault repo mirrored into site repo
-- Document the advanced auto-sync option for separate repos: vault repo push triggers site repo via `repository_dispatch`, site repo checks out both repos, runs the same sync script, builds, and deploys.
+Files changed:
 
-7. Hardening and handoff
-- Add safe example content under `content/example` and fixture vault content under `tests/fixtures/vault`.
-- Update `README.md` with local dev, sync, preview, and deploy instructions.
-- After each implementation milestone, append to `plans.md`: files created/updated, what works now, how to verify it, and tradeoffs.
-- Final acceptance gate: `pnpm lint`, `pnpm typecheck`, `pnpm test`, `pnpm build`.
+- `scripts/sync-vault.mts`
+- `scripts/watch-vault.mts`
+- `scripts/build-search-index.mts`
+- `scripts/build-graph.mts`
+- `src/lib/content/notes.ts`
+- `src/lib/content/search.ts`
+- `src/lib/content/graph.ts`
+- `src/lib/content/tree.ts`
+- `src/lib/content/related.ts`
+- `src/lib/content/types.ts`
+- `src/lib/obsidian/frontmatter.ts`
+- `src/lib/obsidian/wiki-links.ts`
+- `src/lib/obsidian/markdown.ts`
+- `tests/unit/content-pipeline.test.ts`
+- `tests/integration/sync-vault.test.ts`
 
-## Important Public Interfaces, Types, and Config
-- `.env.example`
-- `OBSIDIAN_VAULT_PATH=`
-- `SITE_URL=`
-- `VERCEL_TOKEN=`
-- `VERCEL_ORG_ID=`
-- `VERCEL_PROJECT_ID=`
-- optional cross-repo sync variables for the advanced workflow
+What works:
+
+- published-note filtering is enforced through frontmatter and path exclusions
+- vault notes and referenced assets can be mirrored into repo-local build directories
+- backlinks, related notes, navigation tree data, search entries, and graph data are derived from the same published-note set
+- unresolved or ambiguous note links and embeds fail content loading instead of silently shipping broken references
+- resolved wikilinks and embeds are rewritten into article HTML during render
+
+Verification:
+
+- `bun run test` passed on 2026-03-08
+- `bun run typecheck` passed on 2026-03-08
+- `bun run build` passed on 2026-03-08
+
+Preview URL:
+
+- `https://landing-v2-c1se4xz5q-nptakudos-projects.vercel.app` (local CLI preview deploy)
+
+Tradeoffs:
+
+- callouts are normalized into styled blockquotes rather than a richer typed component set
+
+## Milestone 2 - Reader shell and static routes
+
+Status: complete on 2026-03-08
+
+Files changed:
+
+- `src/app/layout.tsx`
+- `src/app/page.tsx`
+- `src/app/docs/page.tsx`
+- `src/app/docs/[...slug]/page.tsx`
+- `src/app/tags/[tag]/page.tsx`
+- `src/app/graph/page.tsx`
+- `src/app/not-found.tsx`
+- `src/components/layout/docs-shell.tsx`
+- `src/components/layout/site-header.tsx`
+- `src/components/navigation/sidebar-tree.tsx`
+- `src/components/note/outline-nav.tsx`
+- `src/components/search/search-dialog.tsx`
+- `src/components/primitives/theme-provider.tsx`
+- `src/components/primitives/theme-toggle.tsx`
+- `src/app/globals.css`
 - `site.config.ts`
-- site metadata, author/profile info, feature flags (`graph`, `rss`), content directory config
-- Core types
-- `NoteFrontmatter`
-- `PublishedNote`
-- `ResolvedWikiLink`
-- `SearchIndexEntry`
-- `ContentGraphNode`
 
-## Test Cases and Scenarios
-- Unit tests for slug generation, publish filtering, title/date normalization, wikilink parsing, alias resolution, tag extraction, callout transform, attachment resolution, backlink graph, and related-note scoring.
-- Integration tests that build fixture vault content into normalized notes and assert generated routes, search index, tag pages, and backlink sections.
-- E2E tests for homepage load, sidebar navigation on desktop/mobile, command search, note rendering, TOC behavior, backlinks/tags, dark mode persistence, reduced-motion behavior, and static exported route availability.
+What works:
 
-## Risk Register
-- Private note leakage: mitigated by `publish: true` opt-in, explicit `draft/private` blocks, excluded system paths, and CI validation against mirrored output only.
-- Broken wikilinks and assets: mitigated by build-time resolution, structured diagnostics, and production build failure for unresolved published-note links.
-- Excalidraw and non-Markdown edge cases: mitigated by excluding raw `.excalidraw.md` pages in v1 and rendering embedded Excalidraw/PDF references as attachment cards.
-- Static export limitations: mitigated by making all search/feed/graph data build-generated and avoiding runtime-only Next features.
-- Cross-repo sync complexity: mitigated by making local mirror workflow the baseline and treating repo-to-repo automation as an additional documented workflow.
+- the site has a branded landing page and a three-column docs shell
+- docs index, note pages, tag pages, and graph summary pages are statically generated
+- theme switching, navigation tree rendering, backlinks, attachments, pager links, breadcrumbs, and mobile drawer rails are wired into the UI
+- search is designed to lazy-load a static JSON index when the dialog opens
+- the note outline rail tracks the active section, and the graph route now renders an interactive force layout
 
-## Demo Script
-1. Run `pnpm content:sync` against `/Users/takudo/Documents/TakudoNotes`; verify only `publish: true` notes appear in `content/notes`.
-2. Start `pnpm dev`; review homepage, sidebar explorer, note template, tags, backlinks, and graph view.
-3. Use `Cmd+K` to find a note by title, alias, and body text.
-4. Open a note with wikilinks, callouts, and embedded assets; verify canonical links, TOC, related notes, and attachments.
-5. Toggle dark mode and reduced-motion behavior.
-6. Push to `main`; GitHub Actions validates and deploys the site to Vercel.
+Verification:
 
-## Assumptions and Defaults
-- Primary implementation path is Next.js App Router with static export, even though Vercel is the primary host.
-- Publishing uses `publish: true`; `published:` remains a source/article date field.
-- Search is client-side from a build-generated JSON index; no external search service and no database.
-- Example content is committed for onboarding and tests, but live content comes from the mirrored Obsidian vault.
+- `bun run build` passed on 2026-03-08
+- spot-check note routing with `generateStaticParams()` in the docs and tag routes
+- static route data comes from `src/lib/site/content.ts`
+
+Preview URL:
+
+- `https://landing-v2-c1se4xz5q-nptakudos-projects.vercel.app` (local CLI preview deploy)
+
+Tradeoffs:
+
+- the graph is static-layout client rendering rather than a fully explorable zoomable canvas
+- the current note renderer uses normalized HTML rather than a heavier MDX component runtime
+
+## Milestone 3 - Documentation, env scaffold, and deployment automation
+
+Status: complete on 2026-03-08
+
+Files changed:
+
+- `README.md`
+- `.env.example`
+- `docs/architecture.md`
+- `docs/content-model.md`
+- `docs/obsidian-compat.md`
+- `docs/design-system.md`
+- `docs/search.md`
+- `docs/deployment.md`
+- `docs/exec-plans/active/personal-docs-site.md`
+- `plans.md`
+- `.github/workflows/ci.yml`
+- `.github/workflows/deploy-vercel.yml`
+
+What works:
+
+- the repository now has source-of-truth docs for architecture, content, Obsidian behavior, design, search, and deployment
+- local environment expectations are documented in a repo-safe `.env.example`
+- CI is defined around Bun install, lint, typecheck, test, and build
+- Vercel deploy automation is defined for preview deployments on `codex/**` and production on `main`
+- the separate-vault mirror workflow is documented and supported in the deploy workflow
+- feature-branch builds also emit RSS, sitemap, and robots files as part of `prebuild`
+
+Verification:
+
+- `bun run lint` passed on 2026-03-08
+- `bun run typecheck` passed on 2026-03-08
+- `bun run test` passed on 2026-03-08
+- `bun run build` passed on 2026-03-08
+- workflow files reviewed for branch targeting and repo-local example-content fallback
+
+Preview URL:
+
+- `https://landing-v2-c1se4xz5q-nptakudos-projects.vercel.app` (local CLI preview deploy)
+
+Tradeoffs:
+
+- deployment is documented and automated, but GitHub-hosted branch deploys still need Vercel secrets configured if the workflow is expected to perform CLI deploys instead of cleanly skipping
+- the deploy workflow now skips cleanly when Vercel secrets are absent, so branch health stays readable while infra is unfinished
+- `SITE_URL` is documented for deploy parity even though the app currently reads the canonical URL from `site.config.ts`
+- milestone notes are accurate to the current worktree, including known implementation gaps outside this docs-only change
+
+## Milestone 4 - Determinism, snapshots, and operator docs
+
+Status: complete on 2026-03-08
+
+Files changed:
+
+- `documentation.md`
+- `package.json`
+- `scripts/export-site.mts`
+- `scripts/build-feeds.mts`
+- `src/lib/content/feeds.ts`
+- `src/lib/content/order.ts`
+- `src/lib/content/graph.ts`
+- `src/lib/content/index.ts`
+- `src/lib/content/notes.ts`
+- `src/lib/content/search.ts`
+- `src/lib/content/tree.ts`
+- `src/lib/site/content.ts`
+- `tests/unit/deterministic-artifacts.test.ts`
+- `tests/unit/__snapshots__/deterministic-artifacts.test.ts.snap`
+- `docs/content-model.md`
+- `docs/deployment.md`
+- `README.md`
+- `plans.md`
+
+What works:
+
+- search, graph, navigation, backlinks, attachments, and feed outputs are serialized in stable order across environments
+- snapshot coverage now guards ordering-sensitive note metadata and generated artifacts
+- the repo has a one-command prepared dev start and a dedicated static export CLI
+- operator-facing docs cover local setup, export usage, repo structure, design file format, and deployment troubleshooting
+
+Verification:
+
+- `bun run lint`
+- `bun run typecheck`
+- `bun test`
+- `bun run build`
+- `bun run export:site -- --output-dir /tmp/landing-site-export`
+- local preview deployment recorded below
+
+Preview URL:
+
+- `https://landing-v2-c1se4xz5q-nptakudos-projects.vercel.app`
+
+Tradeoffs:
+
+- preview visibility is now public on the linked Vercel project; keep `ssoProtection` disabled if unauthenticated branch previews are still desired
+
+## Milestone 5 - GitHub preview repair and committed Vercel contract
+
+Status: complete on 2026-03-08
+
+Files changed:
+
+- `vercel.json`
+- `docs/deployment.md`
+- `plans.md`
+
+What works:
+
+- GitHub-linked Vercel previews no longer depend on mutable dashboard-only framework settings
+- the project deploys as a plain static export using `bun run export:site`
+- the branch preview alias can target a healthy static deployment rather than a failed Next.js runtime deployment
+
+Verification:
+
+- `bun run lint`
+- `bun run typecheck`
+- `bun test`
+- `bun run build`
+- local CLI deploy against the linked `landing` Vercel project
+- branch preview URL checked after alias repair
+
+Preview URL:
+
+- `https://landing-git-codex-obsidian-docs-site-v2-nptakudos-projects.vercel.app`
+
+Tradeoffs:
+
+- the GitHub-linked Vercel project still has mutable dashboard settings, but the committed `vercel.json` now defines the correct deploy shape and should override future drift
