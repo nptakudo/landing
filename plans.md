@@ -24,6 +24,7 @@
 - 2026-03-08: `fs.access()` behaved inconsistently across environments, so the sync integration test now uses `fs.stat()` for deterministic existence checks.
 - 2026-03-08: content ordering is now stable across notes, navigation, search, graph edges, and feeds, with snapshot coverage guarding serialized artifact output.
 - 2026-03-08: local Vercel CLI preview deployment is ready, but the deployment currently returns `401` to unauthenticated requests because Vercel protection is enabled on the project.
+- 2026-03-08: RSS snapshot drift in CI was caused by fixture files falling back to filesystem mtimes; the fixture vault now pins explicit `updated` dates so artifact snapshots stay stable across environments.
 
 ## Milestone 1 - Mirror pipeline and published-note model
 
