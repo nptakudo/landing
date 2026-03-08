@@ -38,7 +38,7 @@ For medium or large tasks, create or update an execution plan under `docs/exec-p
 Before handoff, run:
 
 ```bash
-bun run lint
-bun run typecheck
-bun run build
-bun test
+pnpm lint
+pnpm typecheck
+pnpm build
+pnpm test
