@@ -18,7 +18,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:e2e": "playwright test",
-    "start": "next start",
+    "start": "bun run scripts/serve-export.mts",
     "lint": "eslint"
   },
   "dependencies": {

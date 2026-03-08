@@ -57,9 +57,11 @@ If `content/notes` is empty, the app falls back to `content/example` for local b
 ## Commands
 
 ```bash
+bun run dev
 bun run content:sync
 bun run content:mirror
 bun run content:watch
+bun run dev:prepared
 bun run search:index
 bun run graph:build
 bun run feeds:build
@@ -68,6 +70,7 @@ bun run lint
 bun run typecheck
 bun run test
 bun run build
+bun run start
 ```
 
 ## Vercel previews and production
@@ -80,7 +83,7 @@ bun run build
 
 ## Environment
 
-See `.env.example` for the expected variables. The app currently reads the canonical site URL from `site.config.ts`; `SITE_URL` is still kept for deployment and future config parity.
+See `.env.example` for the expected variables. `SITE_URL` overrides the canonical URL used by `site.config.ts` during builds and deploys.
 
 ## Source-of-truth docs
 

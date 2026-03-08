@@ -65,10 +65,11 @@ This protects preview and production builds from silently shipping broken intern
 
 ## Current rendering limitations
 
-The parser is ahead of the renderer in a few areas:
+The current renderer covers normalized Obsidian markdown, but a few limits remain:
 
-- inline wikilinks are parsed and validated, but the rendered article HTML still shows the original markdown text rather than converted anchor tags
-- callout syntax is not yet transformed into dedicated UI components
+- inline wikilinks and embeds are rewritten into standard markdown before HTML generation
+- callout syntax is normalized into styled blockquotes rather than dedicated UI components
+- MDX syntax and React component embeds are not supported yet
 - raw Excalidraw notes are excluded as pages rather than rendered specially
 
 Those gaps are known and should be treated as follow-up implementation work, not undocumented behavior.

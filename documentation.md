@@ -67,7 +67,7 @@ bun run export:site --vault-path /Users/takudo/Documents/TakudoNotes --output-di
 
 ## Design file format overview
 
-The source format is Obsidian-flavored Markdown/MDX plus YAML frontmatter.
+The source format is Obsidian-flavored Markdown plus YAML frontmatter.
 
 Key supported conventions:
 
@@ -77,6 +77,7 @@ Key supported conventions:
 - Obsidian embeds such as `![[image.png]]`
 - inline tags and frontmatter tags
 - folder paths as navigation sections
+- Markdown extensions are limited to GFM; MDX component syntax is not currently supported
 
 At build time, notes are normalized into typed `PublishedNote` records, then serialized into route content plus `search-index.json`, `graph.json`, `rss.xml`, `sitemap.xml`, and `robots.txt`.
 

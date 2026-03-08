@@ -104,6 +104,8 @@ For this milestone:
 
 Use `bun run export:site` for a repo-local static export flow. It mirrors content, builds the app, and leaves the static output in `out/`, with optional copying via `--output-dir`.
 
+Use `bun run start` to serve the exported `out/` directory locally after a build. The repo uses static export, so `next start` is intentionally not part of the runtime workflow.
+
 ## Local Vercel preview
 
 The worktree is already linked to the `landing-v2` Vercel project. A local CLI preview deploy was verified on 2026-03-08 at:
@@ -111,6 +113,8 @@ The worktree is already linked to the `landing-v2` Vercel project. A local CLI p
 - `https://landing-v2-c1se4xz5q-nptakudos-projects.vercel.app`
 
 If direct HTTP checks return `401`, that is Vercel deployment protection rather than a failed build. Use the Vercel dashboard or an authenticated browser session to inspect the deployed site.
+
+`SITE_URL` is consumed at build time through `site.config.ts`, so deployment environments can override canonical URLs without patching source files.
 
 ## Tradeoffs
 

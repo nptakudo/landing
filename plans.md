@@ -25,6 +25,7 @@
 - 2026-03-08: content ordering is now stable across notes, navigation, search, graph edges, and feeds, with snapshot coverage guarding serialized artifact output.
 - 2026-03-08: local Vercel CLI preview deployment is ready, but the deployment currently returns `401` to unauthenticated requests because Vercel protection is enabled on the project.
 - 2026-03-08: RSS snapshot drift in CI was caused by fixture files falling back to filesystem mtimes; the fixture vault now pins explicit `updated` dates so artifact snapshots stay stable across environments.
+- 2026-03-08: the exported-site `start` flow initially misrouted flat pages like `/docs`; route resolution now prefers `*.html` exports before nested `index.html` fallbacks, with unit coverage for the static server resolver.
 
 ## Milestone 1 - Mirror pipeline and published-note model
 
@@ -109,7 +110,7 @@ Verification:
 
 Preview URL:
 
-- pending
+- `https://landing-v2-c1se4xz5q-nptakudos-projects.vercel.app` (local CLI preview deploy)
 
 Tradeoffs:
 
@@ -154,7 +155,7 @@ Verification:
 
 Preview URL:
 
-- pending
+- `https://landing-v2-c1se4xz5q-nptakudos-projects.vercel.app` (local CLI preview deploy)
 
 Tradeoffs:
 

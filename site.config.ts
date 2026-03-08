@@ -18,7 +18,7 @@ export const siteConfig: SiteConfig = {
   intro:
     "Systems notes, engineering references, and working thoughts published from a local Obsidian vault.",
   location: "Singapore",
-  url: "https://landing.vercel.app",
+  url: process.env.SITE_URL ?? "https://landing.vercel.app",
   featuredFolders: ["Learning", "AzureLearn", "Clippings"],
   featuredTags: ["database", "systems", "azure", "notes"],
   socials: [
