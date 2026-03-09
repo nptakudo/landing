@@ -60,6 +60,7 @@ export function SearchDialog({ compact = false }: { compact?: boolean }) {
         const response = await fetch("/search-index.json");
         const data = (await response.json()) as SearchIndexEntry[];
         const index = new MiniSearch<SearchIndexEntry>({
+          idField: "slug",
           fields: ["title", "description", "aliases", "tags", "headings", "excerpt", "body"],
           storeFields: ["slug", "title", "description", "aliases", "tags", "headings", "excerpt", "body"],
           searchOptions: {
